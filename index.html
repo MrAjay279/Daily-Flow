@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Daily Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        transition: background 0.4s ease;
+      }
+
+      .app-container {
+        max-width: 440px;
+        margin: 0 auto;
+        background: white;
+        min-height: 100vh;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+      }
+
+      /* ==================== THEMES ==================== */
+      .theme-orange .accent-color {
+        color: #f97316;
+      }
+      .theme-orange .accent-bg {
+        background: linear-gradient(135deg, #f97316, #ea580c, #1f2937);
+      }
+      .theme-orange .header-gradient {
+        background: linear-gradient(
+          135deg,
+          #f97316 0%,
+          #ea580c 50%,
+          #1f2937 100%
+        );
+      }
+
+      .theme-green .accent-color {
+        color: #10b981;
+      }
+      .theme-green .accent-bg {
+        background: linear-gradient(135deg, #10b981, #059669, #1f2937);
+      }
+      .theme-green .header-gradient {
+        background: linear-gradient(
+          135deg,
+          #10b981 0%,
+          #059669 50%,
+          #1f2937 100%
+        );
+      }
+
+      .theme-dark {
+        background: #0f172a;
+      }
+      .theme-dark .app-container {
+        background: #1e2937;
+      }
+      .theme-dark .accent-color {
+        color: #60a5fa;
+      }
+      .theme-dark .accent-bg {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      }
+      .theme-dark .header-gradient {
+        background: linear-gradient(135deg, #1e40af, #3b82f6);
+      }
+      .theme-dark .bg-white {
+        background: #334155;
+        border-color: #475569;
+      }
+      .theme-dark .text-slate-700 {
+        color: #e2e8f0;
+      }
+
+      /* Design Improvements */
+      .today-card {
+        padding: 20px !important;
+        border-radius: 20px;
+      }
+      #task-input {
+        padding: 16px 20px !important;
+        font-size: 16px;
+      }
+      .add-btn {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 28px;
+      }
+      .task-item {
+        padding: 16px 18px !important;
+        font-size: 15.8px;
+        border-radius: 20px;
+      }
+      .header-gradient {
+        padding: 16px 20px 22px;
+      }
+      .p-6 {
+        margin-top: 10px;
+      }
+
+      .add-btn {
+        width: 10px;
+        height: 10px;
+        font-size: 18px;
+      }
+
+      /* Completed Task - Better Strikethrough */
+      .task-item.completed {
+        opacity: 0.85;
+        position: relative;
+      }
+
+      .task-item.completed span {
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+        text-decoration-color: black; /* Red strike for better visibility */
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .theme-dark .task-item.completed span {
+        text-decoration-color: #f87171;
+        color: #94a3b8;
+      }
+
+      /* Calendar Styles - FIXED MARKING COLORS */
+      .calendar-day {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .calendar-day.green {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+        font-weight: 700;
+      }
+      .calendar-day.red {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+        font-weight: 700;
+      }
+      .calendar-day.future {
+        opacity: 0.65;
+        background: #f1f5f9;
+      }
+      .calendar-day.today {
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.6);
+      }
+      .calendar-day.selected {
+        transform: scale(1.12);
+        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.6);
+      }
+      .calendar-day.has-tasks::after {
+        content: "";
+        position: absolute;
+        bottom: 6px;
+        right: 6px;
+        width: 8px;
+        height: 8px;
+        background: #fbbf24;
+        border-radius: 50%;
+      }
+      .weekdays {
+        background: #1e2937;
+        color: white;
+        border-radius: 16px;
+        padding: 8px 0;
+      }
+
+      .calendar-nav-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 26px;
+      }
+
+      .mark-btn,
+      .open-tasks-btn {
+        padding: 14px 20px;
+        font-size: 15.5px;
+        border-radius: 20px;
+      }
+
+      .bottom-nav {
+        padding: 14px 20px !important;
+      }
+    </style>
+  </head>
+  <body class="theme-orange min-h-screen pb-20">
+    <div class="app-container">
+      <!-- Header -->
+      <div class="header-gradient text-white">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl font-bold tracking-tighter">Daily Flow</h1>
+            <button
+              onclick="toggleTheme()"
+              class="text-2xl hover:scale-110 transition"
+            >
+              <i class="fas fa-palette"></i>
+            </button>
+          </div>
+          <div class="text-right">
+            <div id="day-name" class="text-2xl font-bold leading-none"></div>
+            <div id="current-time" class="text-xs opacity-90 mt-0.5"></div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-center gap-4">
+          <button
+            onclick="prevDay()"
+            class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95"
+          >
+            ←
+          </button>
+          <div
+            onclick="openDatePicker()"
+            id="selected-date-display"
+            class="text-base font-semibold px-6 py-3 rounded-3xl hover:bg-white/20 transition cursor-pointer"
+          ></div>
+          <button
+            onclick="nextDay()"
+            class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95"
+          >
+            →
+          </button>
+        </div>
+
+        <div class="mt-8 px-2">
+          <div class="flex justify-between text-xs mb-2">
+            <span class="font-medium">Progress</span>
+            <span id="progress-text" class="font-semibold">0/0</span>
+          </div>
+          <div class="h-3 bg-white/30 rounded-full overflow-hidden">
+            <div
+              id="progress-bar"
+              class="h-full bg-white w-0 transition-all duration-700"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-5 -mt-6 relative z-10">
+        <!-- Today View -->
+        <div id="view-today">
+          <div
+            class="today-card bg-white rounded-3xl shadow-2xl p-6 mb-8 border border-slate-100"
+          >
+            <div class="flex gap-4 items-center">
+              <input
+                id="task-input"
+                type="text"
+                placeholder="What needs to be done?"
+                class="flex-1 bg-slate-50 border border-slate-200 focus:border-orange-400 rounded-3xl px-6 py-4 text-base outline-none"
+              />
+              <button
+                onclick="addTask()"
+                class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-lg"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            <div class="mt-4 flex gap-4 items-center">
+              <input
+                type="time"
+                id="task-time"
+                class="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm flex-1"
+              />
+              <label
+                class="flex items-center gap-2 text-sm font-medium text-slate-500 cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  id="recurring-check"
+                  class="w-5 h-5 accent-orange-500"
+                />
+                <span>Daily</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <div class="flex justify-between items-center mb-4 px-1">
+              <h2
+                class="font-semibold text-lg flex items-center gap-2 accent-color"
+              >
+                <i class="fas fa-redo"></i> Daily Habits
+              </h2>
+              <button
+                onclick="resetRecurringCompletions()"
+                class="text-sm accent-color hover:underline"
+              >
+                Reset
+              </button>
+            </div>
+            <ul id="recurring-list" class="space-y-3"></ul>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-4 px-1">
+              <h2
+                class="font-semibold text-lg flex items-center gap-2 accent-color"
+              >
+                <i class="fas fa-calendar-day"></i> Today's Tasks
+              </h2>
+              <button
+                id="clear-completed-btn"
+                onclick="clearCompletedOneTime()"
+                class="hidden text-sm accent-color hover:underline"
+              >
+                Clear done
+              </button>
+            </div>
+            <ul id="onetime-list" class="space-y-3"></ul>
+            <div id="no-tasks" class="hidden text-center py-20 text-slate-400">
+              <i class="fas fa-clipboard-list text-7xl mb-6 opacity-40"></i>
+              <p class="text-lg font-medium">No tasks yet</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div id="view-calendar" class="hidden pt-4 pb-10">
+          <div
+            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
+          >
+            <div class="flex justify-between items-center mb-6">
+              <button
+                onclick="prevMonth()"
+                class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition"
+              >
+                ←
+              </button>
+              <h2
+                id="calendar-month-year"
+                class="text-xl font-semibold accent-color"
+              ></h2>
+              <button
+                onclick="nextMonth()"
+                class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition"
+              >
+                →
+              </button>
+            </div>
+
+            <!-- Weekdays with black background -->
+            <div
+              class="weekdays grid grid-cols-7 text-center text-xs font-medium py-3 mb-4 rounded-2xl"
+            >
+              <div>S</div>
+              <div>M</div>
+              <div>T</div>
+              <div>W</div>
+              <div>T</div>
+              <div>F</div>
+              <div>S</div>
+            </div>
+
+            <div id="calendar-grid" class="grid grid-cols-7 gap-3"></div>
+
+            <div id="selected-day-panel" class="mt-8 hidden">
+              <div class="flex justify-between items-center mb-4">
+                <h3 id="selected-day-title" class="font-semibold text-lg"></h3>
+                <div class="flex gap-3">
+                  <button
+                    id="mark-btn"
+                    onclick="cycleMark()"
+                    class="mark-btn accent-bg text-white flex items-center gap-2 transition"
+                  >
+                    <i class="fas fa-palette"></i> Mark
+                  </button>
+                  <button
+                    onclick="openDayTasks()"
+                    class="open-tasks-btn bg-slate-700 hover:bg-slate-800 text-white flex items-center gap-2 transition"
+                  >
+                    <i class="fas fa-tasks"></i> Open Tasks
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 rounded-3xl p-5">
+                <input
+                  id="calendar-task-input"
+                  type="text"
+                  placeholder="Add task for this day..."
+                  class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 outline-none focus:border-orange-400"
+                />
+                <button
+                  onclick="addTaskFromCalendar()"
+                  class="mt-3 w-full accent-bg py-4 text-white font-semibold rounded-2xl"
+                >
+                  + Add Task
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats & BMI Views (kept as before) -->
+        <div id="view-stats" class="hidden pt-4 pb-10">
+          <div
+            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
+          >
+            <h2
+              class="font-semibold text-2xl accent-color flex items-center gap-3"
+            >
+              <i class="fas fa-chart-simple"></i> Monthly Overview
+            </h2>
+          </div>
+
+          <div
+            class="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100 mt-6 text-center"
+          >
+            <i class="fas fa-leaf text-emerald-500 text-5xl mb-4"></i>
+            <div id="green-days-count" class="text-6xl font-bold accent-color">
+              0
+            </div>
+            <div class="text-slate-500 mt-1 text-lg">Green Days</div>
+            <div class="mt-8 flex justify-center gap-12">
+              <div>
+                <div
+                  id="green-days-total"
+                  class="text-3xl font-semibold text-slate-700"
+                >
+                  0 / 0
+                </div>
+                <div class="text-xs text-slate-500 mt-1">THIS MONTH</div>
+              </div>
+              <div class="border-l border-slate-200"></div>
+              <div>
+                <div
+                  id="green-days-percentage"
+                  class="text-3xl font-semibold text-emerald-600"
+                >
+                  0%
+                </div>
+                <div class="text-xs text-slate-500 mt-1">EFFICIENCY</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="mt-6 bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
+          >
+            <div class="flex items-center gap-2 mb-6">
+              <i class="fas fa-chart-bar text-emerald-500 text-xl"></i>
+              <h3 class="font-semibold text-lg">Last 7 Days</h3>
+            </div>
+            <div
+              id="last-7-container"
+              class="flex justify-between items-end h-52 gap-2"
+            ></div>
+          </div>
+        </div>
+
+        <div id="view-bmi" class="hidden pt-4 pb-10">
+          <div
+            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
+          >
+            <h2
+              class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8"
+            >
+              <i class="fas fa-weight-scale"></i> BMI Calculator
+            </h2>
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-2"
+                  >Height (cm)</label
+                >
+                <input
+                  id="height"
+                  type="number"
+                  placeholder="170"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-2"
+                  >Weight (kg)</label
+                >
+                <input
+                  id="weight"
+                  type="number"
+                  placeholder="65"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400"
+                />
+              </div>
+              <button
+                onclick="calculateBMI()"
+                class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg transition"
+              >
+                Calculate BMI
+              </button>
+              <div
+                id="bmi-result"
+                class="hidden mt-6 p-8 rounded-3xl text-center border"
+              >
+                <div id="bmi-value" class="text-7xl font-bold mb-3"></div>
+                <div
+                  id="bmi-category"
+                  class="text-2xl font-semibold mb-4"
+                ></div>
+                <div id="bmi-advice" class="text-sm"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Floating "Go to Today" Button - Visible only in Today Tab -->
+    <div class="fixed bottom-24 left-0 right-0 max-w-md mx-auto px-4 z-[9999]">
+      <div class="flex justify-end">
+        <button
+          id="float-btn"
+          onclick="goToToday()"
+          class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-lg"
+        >
+          <i class="fas fa-home"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Bottom Navigation -->
+    <div
+      class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 py-4 px-6 z-50"
+    >
+      <div class="flex justify-around">
+        <div
+          onclick="switchTab(0)"
+          id="nav-today"
+          class="flex flex-col items-center cursor-pointer accent-color"
+        >
+          <i class="fas fa-home text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Today</span>
+        </div>
+        <div
+          onclick="switchTab(1)"
+          id="nav-calendar"
+          class="flex flex-col items-center cursor-pointer text-slate-400"
+        >
+          <i class="fas fa-calendar-alt text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Calendar</span>
+        </div>
+        <div
+          onclick="switchTab(2)"
+          id="nav-stats"
+          class="flex flex-col items-center cursor-pointer text-slate-400"
+        >
+          <i class="fas fa-chart-simple text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Stats</span>
+        </div>
+        <div
+          onclick="switchTab(3)"
+          id="nav-bmi"
+          class="flex flex-col items-center cursor-pointer text-slate-400"
+        >
+          <i class="fas fa-weight-scale text-2xl"></i>
+          <span class="text-xs font-medium mt-1">BMI</span>
+        </div>
+      </div>
+    </div>
+
+    <input type="date" id="hidden-date-picker" class="hidden" />
+
+    <script>
+      // ================== FULL ORIGINAL FUNCTIONALITY + DESIGN FIXES ==================
+      let selectedDateKey = "";
+      let recurringTasks = [];
+      let oneTimeTasks = {};
+      let recurringCompletions = {};
+      let calendarMarks = {};
+      let currentTheme = "orange";
+
+      let currentCalendarMonth = new Date().getMonth();
+      let currentCalendarYear = new Date().getFullYear();
+      let selectedCalendarDayKey = null;
+
+      function generateId() {
+        return (
+          Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
+        );
+      }
+
+      function saveData() {
+        localStorage.setItem("recurringTasks", JSON.stringify(recurringTasks));
+        localStorage.setItem("oneTimeTasks", JSON.stringify(oneTimeTasks));
+        localStorage.setItem(
+          "recurringCompletions",
+          JSON.stringify(recurringCompletions),
+        );
+        localStorage.setItem("calendarMarks", JSON.stringify(calendarMarks));
+        localStorage.setItem("currentTheme", currentTheme);
+      }
+
+      function loadData() {
+        recurringTasks =
+          JSON.parse(localStorage.getItem("recurringTasks")) || [];
+        oneTimeTasks = JSON.parse(localStorage.getItem("oneTimeTasks")) || {};
+        recurringCompletions =
+          JSON.parse(localStorage.getItem("recurringCompletions")) || {};
+        calendarMarks = JSON.parse(localStorage.getItem("calendarMarks")) || {};
+        currentTheme = localStorage.getItem("currentTheme") || "orange";
+      }
+
+      function applyTheme() {
+        document.body.classList.remove(
+          "theme-orange",
+          "theme-green",
+          "theme-dark",
+        );
+        document.body.classList.add(`theme-${currentTheme}`);
+      }
+
+      function toggleTheme() {
+        const themes = ["orange", "green", "dark"];
+        let index = themes.indexOf(currentTheme);
+        currentTheme = themes[(index + 1) % 3];
+        applyTheme();
+        saveData();
+        renderAll();
+      }
+
+      function getTodayKey() {
+        return new Date().toISOString().split("T")[0];
+      }
+
+      function formatDateDisplay(dateKey) {
+        const date = new Date(dateKey);
+        return date.toLocaleDateString("en-IN", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      function formatTime(time24) {
+        if (!time24) return "";
+        let [h, m] = time24.split(":").map(Number);
+        const period = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")} ${period}`;
+      }
+
+      function calculateProgress(dateKey) {
+        const recurringCount = recurringTasks.length;
+        const recurringCompleted = recurringCompletions[dateKey]
+          ? Object.values(recurringCompletions[dateKey]).filter(Boolean).length
+          : 0;
+        const oneTimeList = oneTimeTasks[dateKey] || [];
+        const oneTimeCompleted = oneTimeList.filter((t) => t.completed).length;
+        const total = recurringCount + oneTimeList.length;
+        const completed = recurringCompleted + oneTimeCompleted;
+        const percentage =
+          total > 0 ? Math.round((completed / total) * 100) : 0;
+        return { total, completed, percentage };
+      }
+
+      function updateProgress() {
+        const { completed, total, percentage } =
+          calculateProgress(selectedDateKey);
+        document.getElementById("progress-bar").style.width = `${percentage}%`;
+        document.getElementById("progress-text").textContent =
+          `${completed}/${total}`;
+      }
+
+      function renderRecurringTasks() {
+        const list = document.getElementById("recurring-list");
+        list.innerHTML = "";
+        recurringTasks.forEach((task) => {
+          const completed =
+            recurringCompletions[selectedDateKey]?.[task.id] || false;
+          const timeHTML = task.time
+            ? `<div class="text-xs accent-color mt-1">${formatTime(task.time)}</div>`
+            : "";
+          const li = document.createElement("li");
+          li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${completed ? "completed" : ""}`;
+          li.innerHTML = `
+                    <input type="checkbox" class="w-6 h-6 rounded-xl" ${completed ? "checked" : ""}>
+                    <div class="flex-1">
+                        <span class="text-[17px] font-medium">${task.text}</span>
+                        ${timeHTML}
+                    </div>
+                    <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
+                `;
+          li.querySelector("input").addEventListener("change", (e) => {
+            if (!recurringCompletions[selectedDateKey])
+              recurringCompletions[selectedDateKey] = {};
+            recurringCompletions[selectedDateKey][task.id] = e.target.checked;
+            saveData();
+            renderAll();
+          });
+          li.querySelector("button").addEventListener("click", () => {
+            if (confirm("Delete habit?")) {
+              recurringTasks = recurringTasks.filter((t) => t.id !== task.id);
+              saveData();
+              renderAll();
+            }
+          });
+          list.appendChild(li);
+        });
+      }
+
+      function renderOneTimeTasks() {
+        const list = document.getElementById("onetime-list");
+        const noTasks = document.getElementById("no-tasks");
+        const clearBtn = document.getElementById("clear-completed-btn");
+        list.innerHTML = "";
+        const tasks = oneTimeTasks[selectedDateKey] || [];
+
+        if (tasks.length === 0) {
+          noTasks.classList.remove("hidden");
+          clearBtn.classList.add("hidden");
+          return;
+        }
+        noTasks.classList.add("hidden");
+        clearBtn.classList.toggle("hidden", !tasks.some((t) => t.completed));
+
+        tasks.forEach((task) => {
+          const timeHTML = task.time
+            ? `<div class="text-xs accent-color mt-1">${formatTime(task.time)}</div>`
+            : "";
+          const li = document.createElement("li");
+          li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${task.completed ? "completed" : ""}`;
+          li.innerHTML = `
+                    <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
+                    <div class="flex-1">
+                        <span class="text-[17px] font-medium">${task.text}</span>
+                        ${timeHTML}
+                    </div>
+                    <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
+                `;
+          li.querySelector("input").addEventListener("change", (e) => {
+            const target = oneTimeTasks[selectedDateKey].find(
+              (t) => t.id === task.id,
+            );
+            if (target) target.completed = e.target.checked;
+            saveData();
+            renderAll();
+          });
+          li.querySelector("button").addEventListener("click", () => {
+            oneTimeTasks[selectedDateKey] = oneTimeTasks[
+              selectedDateKey
+            ].filter((t) => t.id !== task.id);
+            if (oneTimeTasks[selectedDateKey].length === 0)
+              delete oneTimeTasks[selectedDateKey];
+            saveData();
+            renderAll();
+          });
+          list.appendChild(li);
+        });
+      }
+
+      function renderAll() {
+        renderRecurringTasks();
+        renderOneTimeTasks();
+        updateProgress();
+
+        const displayEl = document.getElementById("selected-date-display");
+        const isToday = selectedDateKey === getTodayKey();
+        displayEl.innerHTML = `${formatDateDisplay(selectedDateKey)} ${isToday ? `<span class="text-xs bg-white/70 text-slate-700 px-3 py-1 rounded-full ml-2">TODAY</span>` : ""}`;
+      }
+
+      function addTask() {
+        const text = document.getElementById("task-input").value.trim();
+        if (!text) return;
+        const isRecurring = document.getElementById("recurring-check").checked;
+        const time = document.getElementById("task-time").value;
+
+        if (isRecurring) {
+          if (
+            recurringTasks.some(
+              (t) => t.text.toLowerCase() === text.toLowerCase(),
+            )
+          ) {
+            alert("Habit already exists!");
+            return;
+          }
+          recurringTasks.push({ id: generateId(), text, time: time || null });
+        } else {
+          if (!oneTimeTasks[selectedDateKey])
+            oneTimeTasks[selectedDateKey] = [];
+          oneTimeTasks[selectedDateKey].push({
+            id: generateId(),
+            text,
+            completed: false,
+            time: time || null,
+          });
+        }
+
+        saveData();
+        document.getElementById("task-input").value = "";
+        document.getElementById("task-time").value = "";
+        document.getElementById("recurring-check").checked = false;
+        renderAll();
+      }
+
+      window.addTaskFromCalendar = function () {
+        const input = document.getElementById("calendar-task-input");
+        const text = input.value.trim();
+        if (!text || !selectedCalendarDayKey) return;
+
+        if (!oneTimeTasks[selectedCalendarDayKey])
+          oneTimeTasks[selectedCalendarDayKey] = [];
+        oneTimeTasks[selectedCalendarDayKey].push({
+          id: generateId(),
+          text,
+          completed: false,
+          time: null,
+        });
+
+        saveData();
+        input.value = "";
+        renderCalendar();
+      };
+
+      function resetRecurringCompletions() {
+        if (confirm("Reset daily habits for this day?")) {
+          recurringCompletions[selectedDateKey] = {};
+          saveData();
+          renderAll();
+        }
+      }
+
+      function clearCompletedOneTime() {
+        if (oneTimeTasks[selectedDateKey]) {
+          oneTimeTasks[selectedDateKey] = oneTimeTasks[selectedDateKey].filter(
+            (t) => !t.completed,
+          );
+          if (oneTimeTasks[selectedDateKey].length === 0)
+            delete oneTimeTasks[selectedDateKey];
+          saveData();
+          renderAll();
+        }
+      }
+
+      function prevDay() {
+        const date = new Date(selectedDateKey);
+        date.setDate(date.getDate() - 1);
+        selectedDateKey = date.toISOString().split("T")[0];
+        renderAll();
+      }
+
+      function nextDay() {
+        const date = new Date(selectedDateKey);
+        date.setDate(date.getDate() + 1);
+        selectedDateKey = date.toISOString().split("T")[0];
+        renderAll();
+      }
+
+      function openDatePicker() {
+        const picker = document.getElementById("hidden-date-picker");
+        picker.value = selectedDateKey;
+        picker.onchange = () => {
+          if (picker.value) selectedDateKey = picker.value;
+          renderAll();
+        };
+        picker.click();
+      }
+
+      function getCalendarKey(year, month, day) {
+        return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      }
+
+      function renderCalendar() {
+        const grid = document.getElementById("calendar-grid");
+        grid.innerHTML = "";
+        const firstDay = new Date(
+          currentCalendarYear,
+          currentCalendarMonth,
+          1,
+        ).getDay();
+        const daysInMonth = new Date(
+          currentCalendarYear,
+          currentCalendarMonth + 1,
+          0,
+        ).getDate();
+        const todayKey = getTodayKey();
+
+        document.getElementById("calendar-month-year").textContent = new Date(
+          currentCalendarYear,
+          currentCalendarMonth,
+        ).toLocaleString("default", { month: "long", year: "numeric" });
+
+        for (let i = 0; i < firstDay; i++)
+          grid.appendChild(document.createElement("div"));
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const key = getCalendarKey(
+            currentCalendarYear,
+            currentCalendarMonth,
+            day,
+          );
+          const mark = calendarMarks[key];
+          const hasOneTimeTasks =
+            oneTimeTasks[key] && oneTimeTasks[key].length > 0;
+          const isToday = key === todayKey;
+          const isFuture = key > todayKey;
+
+          const dayEl = document.createElement("div");
+          dayEl.className = `calendar-day relative h-12 flex items-center justify-center text-lg font-semibold rounded-2xl border border-transparent cursor-pointer
+                    ${mark === "green" ? "green" : ""}
+                    ${mark === "red" ? "red" : ""}
+                    ${isFuture ? "future" : ""}
+                    ${isToday ? "today" : ""}
+                    ${hasOneTimeTasks ? "has-tasks" : ""}`;
+
+          if (selectedCalendarDayKey === key) dayEl.classList.add("selected");
+
+          dayEl.textContent = day;
+
+          dayEl.onclick = () => {
+            selectedCalendarDayKey = key;
+            document
+              .getElementById("selected-day-panel")
+              .classList.remove("hidden");
+            document.getElementById("selected-day-title").textContent =
+              new Date(
+                currentCalendarYear,
+                currentCalendarMonth,
+                day,
+              ).toLocaleDateString("en-IN", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              });
+            renderCalendar();
+          };
+
+          grid.appendChild(dayEl);
+        }
+      }
+
+      function cycleMark() {
+        if (!selectedCalendarDayKey || selectedCalendarDayKey > getTodayKey())
+          return;
+        const current = calendarMarks[selectedCalendarDayKey];
+        calendarMarks[selectedCalendarDayKey] = !current
+          ? "green"
+          : current === "green"
+            ? "red"
+            : null;
+        saveData();
+        renderCalendar();
+      }
+
+      window.openDayTasks = function () {
+        if (!selectedCalendarDayKey) return;
+        selectedDateKey = selectedCalendarDayKey;
+        switchTab(0);
+        renderAll();
+      };
+
+      function prevMonth() {
+        currentCalendarMonth--;
+        if (currentCalendarMonth < 0) {
+          currentCalendarMonth = 11;
+          currentCalendarYear--;
+        }
+        renderCalendar();
+      }
+
+      function nextMonth() {
+        currentCalendarMonth++;
+        if (currentCalendarMonth > 11) {
+          currentCalendarMonth = 0;
+          currentCalendarYear++;
+        }
+        renderCalendar();
+      }
+
+      function renderStats() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const todayDate = now.getDate();
+
+        let greenCount = 0;
+        for (let day = 1; day <= todayDate; day++) {
+          const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          if (calendarMarks[key] === "green") greenCount++;
+        }
+
+        const percentage =
+          todayDate > 0 ? Math.round((greenCount / todayDate) * 100) : 0;
+
+        document.getElementById("green-days-count").textContent = greenCount;
+        document.getElementById("green-days-total").textContent =
+          `${greenCount} / ${todayDate}`;
+        document.getElementById("green-days-percentage").textContent =
+          `${percentage}%`;
+
+        const container = document.getElementById("last-7-container");
+        container.innerHTML = "";
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(now);
+          d.setDate(d.getDate() - i);
+          const key = d.toISOString().split("T")[0];
+          const prog = calculateProgress(key);
+          const height = prog.percentage || 0;
+
+          const barWrapper = document.createElement("div");
+          barWrapper.className = "flex-1 flex flex-col items-center gap-1";
+          barWrapper.innerHTML = `
+                    <div class="text-xs font-medium accent-color">${height}%</div>
+                    <div class="w-full bg-slate-200 rounded-t-2xl overflow-hidden relative" style="height: 160px">
+                        <div class="absolute bottom-0 left-0 w-full accent-bg transition-all duration-500" 
+                             style="height: ${height}%;"></div>
+                    </div>
+                    <div class="text-xs text-slate-500">${d.getDate()}</div>
+                `;
+          container.appendChild(barWrapper);
+        }
+      }
+
+      function calculateBMI() {
+        const heightCm = parseFloat(document.getElementById("height").value);
+        const weightKg = parseFloat(document.getElementById("weight").value);
+        const resultDiv = document.getElementById("bmi-result");
+
+        if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+          alert("Please enter valid height and weight");
+          return;
+        }
+
+        const heightM = heightCm / 100;
+        const bmi = parseFloat((weightKg / (heightM * heightM)).toFixed(1));
+
+        let category = "",
+          advice = "",
+          colorClass = "";
+
+        if (bmi < 18.5) {
+          category = "Underweight";
+          advice = "You may need to gain some weight.";
+          colorClass = "text-blue-500";
+        } else if (bmi < 25) {
+          category = "Normal";
+          advice = "Great! You're in the healthy range.";
+          colorClass = "text-emerald-500";
+        } else if (bmi < 30) {
+          category = "Overweight";
+          advice = "Consider increasing activity.";
+          colorClass = "text-orange-500";
+        } else {
+          category = "Obese";
+          advice = "Consult a doctor for a plan.";
+          colorClass = "text-red-500";
+        }
+
+        document.getElementById("bmi-value").textContent = bmi;
+        document.getElementById("bmi-value").className =
+          `text-7xl font-bold mb-3 ${colorClass}`;
+        document.getElementById("bmi-category").textContent = category;
+        document.getElementById("bmi-category").className =
+          `text-2xl font-semibold mb-4 ${colorClass}`;
+        document.getElementById("bmi-advice").textContent = advice;
+        resultDiv.classList.remove("hidden");
+      }
+
+      function switchTab(tab) {
+        document
+          .getElementById("view-today")
+          .classList.toggle("hidden", tab !== 0);
+        document
+          .getElementById("view-calendar")
+          .classList.toggle("hidden", tab !== 1);
+        document
+          .getElementById("view-stats")
+          .classList.toggle("hidden", tab !== 2);
+        document
+          .getElementById("view-bmi")
+          .classList.toggle("hidden", tab !== 3);
+
+        if (tab === 1) renderCalendar();
+        if (tab === 2) renderStats();
+
+        // Bottom nav active state
+        document
+          .getElementById("nav-today")
+          .classList.toggle("accent-color", tab === 0);
+        document
+          .getElementById("nav-today")
+          .classList.toggle("text-slate-400", tab !== 0);
+        document
+          .getElementById("nav-calendar")
+          .classList.toggle("accent-color", tab === 1);
+        document
+          .getElementById("nav-calendar")
+          .classList.toggle("text-slate-400", tab !== 1);
+        document
+          .getElementById("nav-stats")
+          .classList.toggle("accent-color", tab === 2);
+        document
+          .getElementById("nav-stats")
+          .classList.toggle("text-slate-400", tab !== 2);
+        document
+          .getElementById("nav-bmi")
+          .classList.toggle("accent-color", tab === 3);
+        document
+          .getElementById("nav-bmi")
+          .classList.toggle("text-slate-400", tab !== 3);
+
+        // Show floating button ONLY in Today tab
+        document
+          .getElementById("float-btn")
+          .classList.toggle("hidden", tab !== 0);
+      }
+
+      function goToToday() {
+        selectedDateKey = getTodayKey(); // Go back to actual today
+        renderAll(); // Refresh everything
+        scrollToTodayTasks(); // Scroll to tasks section
+      }
+
+      function init() {
+        loadData();
+        selectedDateKey = getTodayKey();
+        applyTheme();
+
+        const timeEl = document.getElementById("current-time");
+        setInterval(
+          () =>
+            (timeEl.textContent = new Date().toLocaleTimeString("en-IN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })),
+          1000,
+        );
+
+        document.getElementById("day-name").textContent = new Date()
+          .toLocaleDateString("en-IN", { weekday: "short" })
+          .toUpperCase();
+
+        renderAll();
+        switchTab(0);
+
+        document
+          .getElementById("task-input")
+          .addEventListener("keypress", (e) => {
+            if (e.key === "Enter") addTask();
+          });
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
