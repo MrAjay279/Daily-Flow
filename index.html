@@ -268,22 +268,24 @@
                 <i class="fas fa-plus"></i>
               </button>
             </div>
-            <div class="mt-4 flex gap-4 items-center">
-              <input
-                type="time"
-                id="task-time"
-                class="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm flex-1"
-              />
-              <label
-                class="flex items-center gap-2 text-sm font-medium text-slate-500 cursor-pointer"
-              >
+            <div class="mt-4 space-y-4">
+              <div class="flex gap-4 items-center">
                 <input
-                  type="checkbox"
-                  id="recurring-check"
-                  class="w-5 h-5 accent-orange-500"
+                  type="time"
+                  id="task-time"
+                  class="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm flex-1"
                 />
-                <span>Daily</span>
-              </label>
+              </div>
+
+              <!-- Weekday Selector -->
+              <div class="text-sm">
+                <p class="text-slate-500 mb-3 font-medium">
+                  Repeat on these days:
+                </p>
+                <div id="weekday-selector" class="grid grid-cols-7 gap-2">
+                  <!-- Will be filled by JS -->
+                </div>
+              </div>
             </div>
           </div>
 
@@ -516,16 +518,18 @@
       </div>
     </div>
     <!-- Floating "Go to Today" Button - Visible only in Today Tab -->
-    <div class="fixed bottom-24 left-0 right-0 max-w-md mx-auto px-4 z-[9999]">
-      <div class="flex justify-end">
-        <button
-          id="float-btn"
-          onclick="goToToday()"
-          class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-lg"
-        >
-          <i class="fas fa-home"></i>
-        </button>
-      </div>
+    <!-- Draggable Floating Button -->
+    <div
+      id="float-container"
+      class="fixed bottom-24 right-6 z-[9999] transition-all"
+    >
+      <button
+        id="float-btn"
+        onclick="goToToday()"
+        class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-xl w-14 h-14"
+      >
+        <i class="fas fa-home text-2xl"></i>
+      </button>
     </div>
     <!-- Bottom Navigation -->
     <div
@@ -569,6 +573,29 @@
 
     <input type="date" id="hidden-date-picker" class="hidden" />
 
+    <!-- Weekday Repeat Info Modal (optional help) -->
+    <div
+      id="repeat-info"
+      class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000]"
+    >
+      <div class="bg-white rounded-3xl p-6 max-w-[300px] text-center">
+        <h3 class="font-semibold mb-3">How Repeat Works</h3>
+        <p class="text-slate-600 text-sm">
+          • Select no days = One time task<br />
+          • Select all days = Daily task<br />
+          • Select some days = Repeats only on those days
+        </p>
+        <button
+          onclick="
+            document.getElementById('repeat-info').classList.add('hidden')
+          "
+          class="mt-6 w-full py-3 accent-bg text-white rounded-2xl"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+
     <script>
       // ================== FULL ORIGINAL FUNCTIONALITY + DESIGN FIXES ==================
       let selectedDateKey = "";
@@ -577,6 +604,12 @@
       let recurringCompletions = {};
       let calendarMarks = {};
       let currentTheme = "orange";
+      let currentRepeatDays = []; // e.g. [0,1,2,3,4,5,6] for all days
+      let savedBMI = {
+        height: null,
+        weight: null,
+        lastCalculated: null,
+      };
 
       let currentCalendarMonth = new Date().getMonth();
       let currentCalendarYear = new Date().getFullYear();
@@ -597,6 +630,7 @@
         );
         localStorage.setItem("calendarMarks", JSON.stringify(calendarMarks));
         localStorage.setItem("currentTheme", currentTheme);
+        localStorage.setItem("savedBMI", JSON.stringify(savedBMI)); // New
       }
 
       function loadData() {
@@ -607,6 +641,11 @@
           JSON.parse(localStorage.getItem("recurringCompletions")) || {};
         calendarMarks = JSON.parse(localStorage.getItem("calendarMarks")) || {};
         currentTheme = localStorage.getItem("currentTheme") || "orange";
+        savedBMI = JSON.parse(localStorage.getItem("savedBMI")) || {
+          height: null,
+          weight: null,
+          lastCalculated: null,
+        };
       }
 
       function applyTheme() {
@@ -648,6 +687,65 @@
         return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")} ${period}`;
       }
 
+      // Helper to sort tasks by time
+      function timeToMinutes(time) {
+        if (!time) return 9999; // Tasks with no time go to the bottom
+        const [h, m] = time.split(":").map(Number);
+        return h * 60 + m;
+      }
+
+      // Render weekday selector when adding task
+      function renderWeekdaySelector() {
+        const container = document.getElementById("weekday-selector");
+        container.innerHTML = "";
+
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        days.forEach((day, index) => {
+          const btn = document.createElement("button");
+          btn.className = `h-11 text-xs font-medium rounded-2xl border transition-all ${
+            currentRepeatDays.includes(index)
+              ? "accent-bg text-white border-transparent"
+              : "border-slate-200 hover:border-slate-300"
+          }`;
+          btn.textContent = day;
+          btn.onclick = () => toggleRepeatDay(index);
+          container.appendChild(btn);
+        });
+      }
+
+      function toggleRepeatDay(index) {
+        if (currentRepeatDays.includes(index)) {
+          currentRepeatDays = currentRepeatDays.filter((d) => d !== index);
+        } else {
+          currentRepeatDays.push(index);
+          currentRepeatDays.sort((a, b) => a - b);
+        }
+        renderWeekdaySelector();
+      }
+
+      // Color palette for tasks - Soft & Beautiful
+      const taskColors = [
+        "#fef3c7",
+        "#ecfdf5",
+        "#dbeafe",
+        "#f3e8ff",
+        "#fee2e2",
+        "#e0f2fe",
+        "#f0fdf4",
+        "#fefce8",
+        "#fae8e8",
+        "#f0f9ff",
+      ];
+
+      function getTaskColor(id) {
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+          hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return taskColors[Math.abs(hash) % taskColors.length];
+      }
+
       function calculateProgress(dateKey) {
         const recurringCount = recurringTasks.length;
         const recurringCompleted = recurringCompletions[dateKey]
@@ -669,26 +767,59 @@
         document.getElementById("progress-text").textContent =
           `${completed}/${total}`;
       }
-
       function renderRecurringTasks() {
         const list = document.getElementById("recurring-list");
         list.innerHTML = "";
-        recurringTasks.forEach((task) => {
+
+        const today = new Date(selectedDateKey);
+        const dayOfWeek = today.getDay();
+
+        const visibleTasks = recurringTasks.filter((task) => {
+          return !task.repeatDays || task.repeatDays.includes(dayOfWeek);
+        });
+
+        visibleTasks.forEach((task) => {
           const completed =
             recurringCompletions[selectedDateKey]?.[task.id] || false;
+          const bgColor = getTaskColor(task.id);
+
           const timeHTML = task.time
-            ? `<div class="text-xs accent-color mt-1">${formatTime(task.time)}</div>`
-            : "";
+            ? `<div onclick="editTaskTime('${task.id}', true)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
+            : `<div onclick="editTaskTime('${task.id}', true)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
+
+          let repeatIndicator = "";
+          if (task.repeatDays && task.repeatDays.length > 0) {
+            const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const selectedLetters = task.repeatDays
+              .map((i) => dayNames[i])
+              .join(" ");
+            const isDaily = task.repeatDays.length === 7;
+
+            repeatIndicator = isDaily
+              ? `<div class="inline-block text-[10px] font-semibold px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-700 mt-1">Daily</div>`
+              : `<div class="text-[10px] font-semibold text-violet-600 mt-1">${selectedLetters}</div>`;
+          }
+
           const li = document.createElement("li");
           li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${completed ? "completed" : ""}`;
+          li.draggable = true;
+          li.dataset.id = task.id;
+          li.dataset.type = "recurring";
+          li.style.backgroundColor = completed ? "#f8fafc" : bgColor;
+
           li.innerHTML = `
-                    <input type="checkbox" class="w-6 h-6 rounded-xl" ${completed ? "checked" : ""}>
-                    <div class="flex-1">
-                        <span class="text-[17px] font-medium">${task.text}</span>
-                        ${timeHTML}
-                    </div>
-                    <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
-                `;
+      <input type="checkbox" class="w-6 h-6 rounded-xl" ${completed ? "checked" : ""}>
+      <div class="flex-1 min-w-0">
+        <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
+        ${timeHTML}
+        ${repeatIndicator}
+      </div>
+      <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
+    `;
+
+          const textSpan = li.querySelector(".task-text");
+          makeTextEditable(textSpan, task.id, true);
+
           li.querySelector("input").addEventListener("change", (e) => {
             if (!recurringCompletions[selectedDateKey])
               recurringCompletions[selectedDateKey] = {};
@@ -696,6 +827,7 @@
             saveData();
             renderAll();
           });
+
           li.querySelector("button").addEventListener("click", () => {
             if (confirm("Delete habit?")) {
               recurringTasks = recurringTasks.filter((t) => t.id !== task.id);
@@ -703,8 +835,11 @@
               renderAll();
             }
           });
+
           list.appendChild(li);
         });
+
+        enableDragAndDrop("recurring-list", true);
       }
 
       function renderOneTimeTasks() {
@@ -712,30 +847,43 @@
         const noTasks = document.getElementById("no-tasks");
         const clearBtn = document.getElementById("clear-completed-btn");
         list.innerHTML = "";
-        const tasks = oneTimeTasks[selectedDateKey] || [];
+
+        let tasks = oneTimeTasks[selectedDateKey] || [];
 
         if (tasks.length === 0) {
           noTasks.classList.remove("hidden");
           clearBtn.classList.add("hidden");
           return;
         }
+
         noTasks.classList.add("hidden");
         clearBtn.classList.toggle("hidden", !tasks.some((t) => t.completed));
 
         tasks.forEach((task) => {
+          const bgColor = getTaskColor(task.id);
           const timeHTML = task.time
-            ? `<div class="text-xs accent-color mt-1">${formatTime(task.time)}</div>`
-            : "";
+            ? `<div onclick="editTaskTime('${task.id}', false)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
+            : `<div onclick="editTaskTime('${task.id}', false)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
+
           const li = document.createElement("li");
           li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${task.completed ? "completed" : ""}`;
+          li.draggable = true;
+          li.dataset.id = task.id;
+          li.dataset.type = "onetime";
+          li.style.backgroundColor = task.completed ? "#f8fafc" : bgColor;
+
           li.innerHTML = `
-                    <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
-                    <div class="flex-1">
-                        <span class="text-[17px] font-medium">${task.text}</span>
-                        ${timeHTML}
-                    </div>
-                    <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
-                `;
+      <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
+      <div class="flex-1 min-w-0">
+        <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
+        ${timeHTML}
+      </div>
+      <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
+    `;
+
+          const textSpan = li.querySelector(".task-text");
+          makeTextEditable(textSpan, task.id, false);
+
           li.querySelector("input").addEventListener("change", (e) => {
             const target = oneTimeTasks[selectedDateKey].find(
               (t) => t.id === task.id,
@@ -744,6 +892,7 @@
             saveData();
             renderAll();
           });
+
           li.querySelector("button").addEventListener("click", () => {
             oneTimeTasks[selectedDateKey] = oneTimeTasks[
               selectedDateKey
@@ -753,8 +902,98 @@
             saveData();
             renderAll();
           });
+
           list.appendChild(li);
         });
+
+        enableDragAndDrop("onetime-list", false);
+      }
+
+      // Show one-time tasks when a date is selected in Calendar
+      function renderSelectedDayTasks() {
+        const container = document.getElementById("selected-day-panel");
+
+        // Remove old task list if exists
+        let taskList = document.getElementById("calendar-task-list");
+        if (taskList) taskList.remove();
+
+        const tasks = oneTimeTasks[selectedCalendarDayKey] || [];
+
+        if (tasks.length === 0) return;
+
+        // Create task list
+        taskList = document.createElement("div");
+        taskList.id = "calendar-task-list";
+        taskList.className = "mt-6";
+
+        const title = document.createElement("h4");
+        title.className =
+          "font-medium text-slate-600 mb-3 flex items-center gap-2";
+        title.innerHTML = `<i class="fas fa-tasks"></i> Tasks for this day`;
+        taskList.appendChild(title);
+
+        const ul = document.createElement("ul");
+        ul.className = "space-y-3";
+
+        // Sort by time
+        const sortedTasks = [...tasks].sort(
+          (a, b) => timeToMinutes(a.time) - timeToMinutes(b.time),
+        );
+
+        tasks.forEach((task) => {
+          const li = document.createElement("li");
+          li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${task.completed ? "completed" : ""}`;
+          li.draggable = true;
+          li.dataset.id = task.id;
+          li.style.backgroundColor = task.completed
+            ? "#f8fafc"
+            : getTaskColor(task.id);
+
+          const timeHTML = task.time
+            ? `<div onclick="editTaskTime('${task.id}', false)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
+            : `<div onclick="editTaskTime('${task.id}', false)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
+
+          li.innerHTML = `
+      <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
+      <div class="flex-1 min-w-0">
+        <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
+        ${timeHTML}
+      </div>
+      <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
+    `;
+
+          const textSpan = li.querySelector(".task-text");
+          makeTextEditable(textSpan, task.id, false);
+
+          // Checkbox, Delete, etc. (same as before)
+          li.querySelector("input").addEventListener("change", (e) => {
+            const targetTask = oneTimeTasks[selectedCalendarDayKey].find(
+              (t) => t.id === task.id,
+            );
+            if (targetTask) targetTask.completed = e.target.checked;
+            saveData();
+            renderSelectedDayTasks();
+            renderAll();
+          });
+
+          li.querySelector("button").addEventListener("click", () => {
+            if (confirm("Delete this task?")) {
+              oneTimeTasks[selectedCalendarDayKey] = oneTimeTasks[
+                selectedCalendarDayKey
+              ].filter((t) => t.id !== task.id);
+              if (oneTimeTasks[selectedCalendarDayKey].length === 0)
+                delete oneTimeTasks[selectedCalendarDayKey];
+              saveData();
+              renderSelectedDayTasks();
+              renderCalendar();
+            }
+          });
+
+          ul.appendChild(li);
+        });
+
+        taskList.appendChild(ul);
+        container.appendChild(taskList);
       }
 
       function renderAll() {
@@ -770,34 +1009,49 @@
       function addTask() {
         const text = document.getElementById("task-input").value.trim();
         if (!text) return;
-        const isRecurring = document.getElementById("recurring-check").checked;
-        const time = document.getElementById("task-time").value;
+
+        const time = document.getElementById("task-time").value || null;
+
+        const isRecurring = currentRepeatDays.length > 0;
+        const isDaily = currentRepeatDays.length === 7;
 
         if (isRecurring) {
+          // Check for duplicate recurring task
           if (
             recurringTasks.some(
               (t) => t.text.toLowerCase() === text.toLowerCase(),
             )
           ) {
-            alert("Habit already exists!");
+            alert("This habit already exists!");
             return;
           }
-          recurringTasks.push({ id: generateId(), text, time: time || null });
+
+          recurringTasks.push({
+            id: generateId(),
+            text: text,
+            time: time,
+            repeatDays: [...currentRepeatDays], // Save selected days
+          });
         } else {
+          // One-time task
           if (!oneTimeTasks[selectedDateKey])
             oneTimeTasks[selectedDateKey] = [];
           oneTimeTasks[selectedDateKey].push({
             id: generateId(),
-            text,
+            text: text,
             completed: false,
-            time: time || null,
+            time: time,
           });
         }
 
         saveData();
+
+        // Reset form
         document.getElementById("task-input").value = "";
         document.getElementById("task-time").value = "";
-        document.getElementById("recurring-check").checked = false;
+        currentRepeatDays = [];
+        renderWeekdaySelector();
+
         renderAll();
       }
 
@@ -838,6 +1092,50 @@
           saveData();
           renderAll();
         }
+      }
+
+      function enableDragAndDropForCalendar() {
+        const ul = document.querySelector("#calendar-task-list ul");
+        if (!ul) return;
+
+        ul.addEventListener("dragstart", (e) => {
+          if (e.target.classList.contains("task-item")) {
+            e.target.classList.add("opacity-50");
+            e.dataTransfer.setData("text/plain", e.target.dataset.id);
+          }
+        });
+
+        ul.addEventListener("dragend", (e) => {
+          if (e.target.classList.contains("task-item")) {
+            e.target.classList.remove("opacity-50");
+          }
+        });
+
+        ul.addEventListener("dragover", (e) => e.preventDefault());
+
+        ul.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const id = e.dataTransfer.getData("text/plain");
+          const afterElement = getDragAfterElement(ul, e.clientY);
+
+          const tasks = oneTimeTasks[selectedCalendarDayKey];
+          const taskIndex = tasks.findIndex((t) => t.id === id);
+          if (taskIndex === -1) return;
+
+          const [movedTask] = tasks.splice(taskIndex, 1);
+
+          if (afterElement) {
+            const afterId = afterElement.dataset.id;
+            const afterIndex = tasks.findIndex((t) => t.id === afterId);
+            tasks.splice(afterIndex, 0, movedTask);
+          } else {
+            tasks.push(movedTask);
+          }
+
+          saveData();
+          renderSelectedDayTasks();
+          renderAll();
+        });
       }
 
       function prevDay() {
@@ -888,8 +1186,9 @@
           currentCalendarMonth,
         ).toLocaleString("default", { month: "long", year: "numeric" });
 
-        for (let i = 0; i < firstDay; i++)
+        for (let i = 0; i < firstDay; i++) {
           grid.appendChild(document.createElement("div"));
+        }
 
         for (let day = 1; day <= daysInMonth; day++) {
           const key = getCalendarKey(
@@ -905,11 +1204,11 @@
 
           const dayEl = document.createElement("div");
           dayEl.className = `calendar-day relative h-12 flex items-center justify-center text-lg font-semibold rounded-2xl border border-transparent cursor-pointer
-                    ${mark === "green" ? "green" : ""}
-                    ${mark === "red" ? "red" : ""}
-                    ${isFuture ? "future" : ""}
-                    ${isToday ? "today" : ""}
-                    ${hasOneTimeTasks ? "has-tasks" : ""}`;
+      ${mark === "green" ? "green" : ""}
+      ${mark === "red" ? "red" : ""}
+      ${isFuture ? "future" : ""}
+      ${isToday ? "today" : ""}
+      ${hasOneTimeTasks ? "has-tasks" : ""}`;
 
           if (selectedCalendarDayKey === key) dayEl.classList.add("selected");
 
@@ -931,6 +1230,7 @@
                 day: "numeric",
               });
             renderCalendar();
+            renderSelectedDayTasks(); // ← New: Show tasks
           };
 
           grid.appendChild(dayEl);
@@ -1019,10 +1319,40 @@
         }
       }
 
+      // Edit Task Function
+      function editTask(taskId, isRecurring) {
+        const newText = prompt(
+          "Edit task:",
+          isRecurring
+            ? recurringTasks.find((t) => t.id === taskId).text
+            : oneTimeTasks[selectedDateKey || selectedCalendarDayKey].find(
+                (t) => t.id === taskId,
+              ).text,
+        );
+
+        if (newText === null || newText.trim() === "") return; // Cancelled or empty
+
+        if (isRecurring) {
+          const task = recurringTasks.find((t) => t.id === taskId);
+          if (task) task.text = newText.trim();
+        } else {
+          const dateKey = selectedDateKey || selectedCalendarDayKey;
+          const task = oneTimeTasks[dateKey].find((t) => t.id === taskId);
+          if (task) task.text = newText.trim();
+        }
+
+        saveData();
+        renderAll();
+        if (selectedCalendarDayKey) renderSelectedDayTasks();
+      }
+
       function calculateBMI() {
-        const heightCm = parseFloat(document.getElementById("height").value);
-        const weightKg = parseFloat(document.getElementById("weight").value);
-        const resultDiv = document.getElementById("bmi-result");
+        let heightCm = parseFloat(document.getElementById("height").value);
+        let weightKg = parseFloat(document.getElementById("weight").value);
+
+        // If fields are empty, use saved values
+        if (!heightCm && savedBMI.height) heightCm = savedBMI.height;
+        if (!weightKg && savedBMI.weight) weightKg = savedBMI.weight;
 
         if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
           alert("Please enter valid height and weight");
@@ -1032,28 +1362,39 @@
         const heightM = heightCm / 100;
         const bmi = parseFloat((weightKg / (heightM * heightM)).toFixed(1));
 
+        // Save the values
+        savedBMI.height = heightCm;
+        savedBMI.weight = weightKg;
+        savedBMI.lastCalculated = new Date().toISOString();
+        saveData();
+
+        // Fill the inputs with saved values
+        document.getElementById("height").value = heightCm;
+        document.getElementById("weight").value = weightKg;
+
         let category = "",
           advice = "",
           colorClass = "";
 
         if (bmi < 18.5) {
           category = "Underweight";
-          advice = "You may need to gain some weight.";
-          colorClass = "text-blue-500";
+          advice = "You may need to gain some healthy weight.";
+          colorClass = "text-blue-600";
         } else if (bmi < 25) {
-          category = "Normal";
+          category = "Normal weight";
           advice = "Great! You're in the healthy range.";
-          colorClass = "text-emerald-500";
+          colorClass = "text-emerald-600";
         } else if (bmi < 30) {
           category = "Overweight";
-          advice = "Consider increasing activity.";
-          colorClass = "text-orange-500";
+          advice = "Consider increasing physical activity.";
+          colorClass = "text-orange-600";
         } else {
           category = "Obese";
-          advice = "Consult a doctor for a plan.";
-          colorClass = "text-red-500";
+          advice = "We recommend consulting a doctor for a proper plan.";
+          colorClass = "text-red-600";
         }
 
+        const resultDiv = document.getElementById("bmi-result");
         document.getElementById("bmi-value").textContent = bmi;
         document.getElementById("bmi-value").className =
           `text-7xl font-bold mb-3 ${colorClass}`;
@@ -1062,6 +1403,15 @@
           `text-2xl font-semibold mb-4 ${colorClass}`;
         document.getElementById("bmi-advice").textContent = advice;
         resultDiv.classList.remove("hidden");
+      }
+
+      function loadSavedBMI() {
+        if (savedBMI.height) {
+          document.getElementById("height").value = savedBMI.height;
+        }
+        if (savedBMI.weight) {
+          document.getElementById("weight").value = savedBMI.weight;
+        }
       }
 
       function switchTab(tab) {
@@ -1119,20 +1469,231 @@
         scrollToTodayTasks(); // Scroll to tasks section
       }
 
+      // Inline Edit Task Text
+      function makeTextEditable(span, taskId, isRecurring) {
+        span.style.cursor = "pointer";
+        span.onclick = () => {
+          const currentText = span.textContent;
+          const input = document.createElement("input");
+          input.type = "text";
+          input.value = currentText;
+          input.className =
+            "w-full bg-white border border-orange-400 rounded-xl px-3 py-1 text-[17px] outline-none";
+
+          span.replaceWith(input);
+          input.focus();
+          input.select();
+
+          function saveEdit() {
+            const newText = input.value.trim();
+            if (newText && newText !== currentText) {
+              if (isRecurring) {
+                const task = recurringTasks.find((t) => t.id === taskId);
+                if (task) task.text = newText;
+              } else {
+                const dateKey = selectedDateKey || selectedCalendarDayKey;
+                const task = oneTimeTasks[dateKey].find((t) => t.id === taskId);
+                if (task) task.text = newText;
+              }
+              saveData();
+            }
+            renderAll();
+            if (selectedCalendarDayKey) renderSelectedDayTasks();
+          }
+
+          input.onblur = saveEdit;
+          input.onkeydown = (e) => {
+            if (e.key === "Enter") saveEdit();
+            if (e.key === "Escape") {
+              renderAll();
+              if (selectedCalendarDayKey) renderSelectedDayTasks();
+            }
+          };
+        };
+      }
+
+      // Edit Time Function
+      function editTaskTime(taskId, isRecurring) {
+        const dateKey = selectedDateKey || selectedCalendarDayKey;
+        let task;
+
+        if (isRecurring) {
+          task = recurringTasks.find((t) => t.id === taskId);
+        } else {
+          task = oneTimeTasks[dateKey].find((t) => t.id === taskId);
+        }
+
+        if (!task) return;
+
+        const newTime = prompt(
+          "Enter new time (HH:MM 24-hour format)\nExample: 14:30\nLeave empty to remove time",
+          task.time || "",
+        );
+
+        if (newTime !== null) {
+          task.time = newTime.trim() === "" ? null : newTime.trim();
+          saveData();
+          renderAll();
+          if (selectedCalendarDayKey) renderSelectedDayTasks();
+        }
+      }
+
+      // ====================== DRAG & DROP FUNCTIONALITY ======================
+      function enableDragAndDrop(listId, isRecurring) {
+        const list = document.getElementById(listId);
+        if (!list) return;
+
+        list.addEventListener("dragstart", (e) => {
+          if (e.target.classList.contains("task-item")) {
+            e.target.classList.add("opacity-50");
+            e.dataTransfer.setData("text/plain", e.target.dataset.id);
+            e.dataTransfer.setData(
+              "type",
+              isRecurring ? "recurring" : "onetime",
+            );
+          }
+        });
+
+        list.addEventListener("dragend", (e) => {
+          if (e.target.classList.contains("task-item")) {
+            e.target.classList.remove("opacity-50");
+          }
+        });
+
+        list.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const afterElement = getDragAfterElement(list, e.clientY);
+          const draggable = document.querySelector(".opacity-50");
+          if (afterElement == null) {
+            list.appendChild(draggable);
+          } else {
+            list.insertBefore(draggable, afterElement);
+          }
+        });
+
+        list.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const id = e.dataTransfer.getData("text/plain");
+          const type = e.dataTransfer.getData("type");
+
+          const afterElement = getDragAfterElement(list, e.clientY);
+          const taskArray = isRecurring
+            ? recurringTasks
+            : oneTimeTasks[selectedDateKey || selectedCalendarDayKey];
+
+          // Reorder array
+          const taskIndex = taskArray.findIndex((t) => t.id === id);
+          if (taskIndex === -1) return;
+
+          const [movedTask] = taskArray.splice(taskIndex, 1);
+
+          if (afterElement) {
+            const afterId = afterElement.dataset.id;
+            const afterIndex = taskArray.findIndex((t) => t.id === afterId);
+            taskArray.splice(afterIndex, 0, movedTask);
+          } else {
+            taskArray.push(movedTask);
+          }
+
+          saveData();
+          renderAll();
+          if (selectedCalendarDayKey) renderSelectedDayTasks();
+        });
+      }
+
+      // Helper for smooth drag position
+      function getDragAfterElement(container, y) {
+        const draggableElements = [
+          ...container.querySelectorAll(".task-item:not(.opacity-50)"),
+        ];
+
+        return draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+              return { offset: offset, element: child };
+            } else {
+              return closest;
+            }
+          },
+          { offset: Number.NEGATIVE_INFINITY },
+        ).element;
+      }
+
+      // ====================== DRAGGABLE FLOATING BUTTON ======================
+      let isDragging = false;
+      let currentX, currentY, initialX, initialY;
+
+      function makeButtonDraggable() {
+        const btn = document.getElementById("float-btn");
+        const container = document.getElementById("float-container");
+
+        // Mouse support
+        btn.addEventListener("mousedown", startDrag);
+        document.addEventListener("mousemove", drag);
+        document.addEventListener("mouseup", stopDrag);
+
+        // Touch support (for mobile)
+        btn.addEventListener("touchstart", startDrag, { passive: false });
+        document.addEventListener("touchmove", drag, { passive: false });
+        document.addEventListener("touchend", stopDrag);
+
+        function startDrag(e) {
+          isDragging = true;
+          const rect = container.getBoundingClientRect();
+
+          initialX = (e.clientX || e.touches[0].clientX) - rect.left;
+          initialY = (e.clientY || e.touches[0].clientY) - rect.top;
+
+          currentX = rect.left;
+          currentY = rect.top;
+        }
+
+        function drag(e) {
+          if (!isDragging) return;
+          e.preventDefault();
+
+          const x = (e.clientX || e.touches[0].clientX) - initialX;
+          const y = (e.clientY || e.touches[0].clientY) - initialY;
+
+          // Keep button within screen bounds
+          const maxX = window.innerWidth - 60;
+          const maxY = window.innerHeight - 80;
+
+          currentX = Math.min(Math.max(10, x), maxX);
+          currentY = Math.min(Math.max(10, y), maxY);
+
+          container.style.left = currentX + "px";
+          container.style.top = currentY + "px";
+          container.style.bottom = "auto";
+          container.style.right = "auto";
+        }
+
+        function stopDrag() {
+          isDragging = false;
+        }
+      }
+
       function init() {
         loadData();
+        loadSavedBMI();
+        // Add this at the very end of init()
+        makeButtonDraggable();
         selectedDateKey = getTodayKey();
         applyTheme();
 
+        // Initialize weekday selector
+        currentRepeatDays = [];
+        renderWeekdaySelector();
+
         const timeEl = document.getElementById("current-time");
-        setInterval(
-          () =>
-            (timeEl.textContent = new Date().toLocaleTimeString("en-IN", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })),
-          1000,
-        );
+        setInterval(() => {
+          timeEl.textContent = new Date().toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }, 1000);
 
         document.getElementById("day-name").textContent = new Date()
           .toLocaleDateString("en-IN", { weekday: "short" })
