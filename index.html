@@ -115,6 +115,19 @@
         font-size: 18px;
       }
 
+      .about-card {
+        padding: 20px;
+        border-radius: 20px;
+      }
+      .feature-item {
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 16px;
+      }
+      .theme-dark .feature-item {
+        background: #334155;
+      }
+
       /* Completed Task - Better Strikethrough */
       .task-item.completed {
         opacity: 0.85;
@@ -515,8 +528,117 @@
             </div>
           </div>
         </div>
+                <!-- ==================== ABOUT VIEW ==================== -->
+        <div id="view-about" class="hidden pt-4 pb-10">
+          <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
+            <div class="text-center mb-8">
+              <div class="w-20 h-20 mx-auto accent-bg rounded-2xl flex items-center justify-center text-white text-5xl mb-4 shadow-lg">
+                <i class="fas fa-water"></i>
+              </div>
+              <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
+              <p class="text-slate-500 mt-1 text-sm">Version 1.3 • Built for better days</p>
+            </div>
+
+            <div class="space-y-8">
+              <!-- About -->
+              <div>
+                <h2 class="text-xl font-semibold accent-color mb-3 flex items-center gap-2">
+                  <i class="fas fa-info-circle"></i> About Daily Flow
+                </h2>
+                <p class="text-slate-600 leading-relaxed text-[15px]">
+                  Daily Flow is a clean and simple daily planner that helps you build consistent habits, 
+                  manage your tasks, and track your progress every day with joy and intention.
+                </p>
+              </div>
+
+              <!-- Key Features -->
+              <div>
+                <h2 class="text-xl font-semibold accent-color mb-4 flex items-center gap-2">
+                  <i class="fas fa-star"></i> Key Features
+                </h2>
+                <div class="grid grid-cols-1 gap-4">
+                  <div class="feature-item flex gap-4 items-start">
+                    <div class="text-2xl accent-color mt-0.5">🔄</div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold">Recurring Habits</h4>
+                      <p class="text-sm text-slate-600">Repeat daily or on specific weekdays</p>
+                    </div>
+                  </div>
+                  <div class="feature-item flex gap-4 items-start">
+                    <div class="text-2xl accent-color mt-0.5">📅</div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold">One-time Tasks</h4>
+                      <p class="text-sm text-slate-600">Tasks for specific days with optional time</p>
+                    </div>
+                  </div>
+                  <div class="feature-item flex gap-4 items-start">
+                    <div class="text-2xl accent-color mt-0.5">🎨</div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold">Beautiful Calendar</h4>
+                      <p class="text-sm text-slate-600">Mark days green/red to track consistency</p>
+                    </div>
+                  </div>
+                  <div class="feature-item flex gap-4 items-start">
+                    <div class="text-2xl accent-color mt-0.5">📊</div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold">Progress Tracking</h4>
+                      <p class="text-sm text-slate-600">Live progress bar and monthly stats</p>
+                    </div>
+                  </div>
+                  <div class="feature-item flex gap-4 items-start">
+                    <div class="text-2xl accent-color mt-0.5">⚖️</div>
+                    <div class="flex-1">
+                      <h4 class="font-semibold">BMI Calculator</h4>
+                      <p class="text-sm text-slate-600">Quick built-in health tracker</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- How to Use -->
+              <div>
+                <h2 class="text-xl font-semibold accent-color mb-4 flex items-center gap-2">
+                  <i class="fas fa-book"></i> How to Use
+                </h2>
+                <div class="space-y-6 text-[15px]">
+                  <div>
+                    <h4 class="font-semibold text-slate-700 mb-1.5">Adding Tasks</h4>
+                    <p class="text-slate-600">Type your task and tap the + button.<br>
+                    Select weekdays = Recurring habit<br>
+                    No days selected = One-time task</p>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-slate-700 mb-1.5">Calendar</h4>
+                    <p class="text-slate-600">Tap any day to mark it Green (good day) or Red.<br>
+                    You can also add tasks directly in calendar view.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pro Tips -->
+              <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
+                <h3 class="font-semibold text-amber-700 mb-3 flex items-center gap-2">
+                  <i class="fas fa-lightbulb"></i> Pro Tips
+                </h3>
+                <ul class="text-sm text-amber-700 space-y-2">
+                  <li>• Tap on task text to edit it</li>
+                  <li>• Drag & drop tasks to reorder</li>
+                  <li>• Tap the time below a task to set reminder</li>
+                  <li>• Use floating button to jump back to Today</li>
+                  <li>• Mark calendar days consistently to build streaks</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-12 text-center text-xs text-slate-400">
+              Thank you for using Daily Flow ✨<br>
+              One day at a time.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
     <!-- Floating "Go to Today" Button - Visible only in Today Tab -->
     <!-- Draggable Floating Button -->
     <div
@@ -567,6 +689,10 @@
         >
           <i class="fas fa-weight-scale text-2xl"></i>
           <span class="text-xs font-medium mt-1">BMI</span>
+        </div>
+        <div onclick="switchTab(4)" id="nav-about" class="flex flex-col items-center cursor-pointer text-slate-400">
+          <i class="fas fa-info-circle text-2xl"></i>
+          <span class="text-xs font-medium mt-1">About</span>
         </div>
       </div>
     </div>
@@ -1414,53 +1540,34 @@
         }
       }
 
-      function switchTab(tab) {
-        document
-          .getElementById("view-today")
-          .classList.toggle("hidden", tab !== 0);
-        document
-          .getElementById("view-calendar")
-          .classList.toggle("hidden", tab !== 1);
-        document
-          .getElementById("view-stats")
-          .classList.toggle("hidden", tab !== 2);
-        document
-          .getElementById("view-bmi")
-          .classList.toggle("hidden", tab !== 3);
+            function switchTab(tab) {
+        document.getElementById("view-today").classList.toggle("hidden", tab !== 0);
+        document.getElementById("view-calendar").classList.toggle("hidden", tab !== 1);
+        document.getElementById("view-stats").classList.toggle("hidden", tab !== 2);
+        document.getElementById("view-bmi").classList.toggle("hidden", tab !== 3);
+        document.getElementById("view-about").classList.toggle("hidden", tab !== 4);
 
         if (tab === 1) renderCalendar();
         if (tab === 2) renderStats();
 
-        // Bottom nav active state
-        document
-          .getElementById("nav-today")
-          .classList.toggle("accent-color", tab === 0);
-        document
-          .getElementById("nav-today")
-          .classList.toggle("text-slate-400", tab !== 0);
-        document
-          .getElementById("nav-calendar")
-          .classList.toggle("accent-color", tab === 1);
-        document
-          .getElementById("nav-calendar")
-          .classList.toggle("text-slate-400", tab !== 1);
-        document
-          .getElementById("nav-stats")
-          .classList.toggle("accent-color", tab === 2);
-        document
-          .getElementById("nav-stats")
-          .classList.toggle("text-slate-400", tab !== 2);
-        document
-          .getElementById("nav-bmi")
-          .classList.toggle("accent-color", tab === 3);
-        document
-          .getElementById("nav-bmi")
-          .classList.toggle("text-slate-400", tab !== 3);
+        // Bottom nav active states
+        document.getElementById("nav-today").classList.toggle("accent-color", tab === 0);
+        document.getElementById("nav-today").classList.toggle("text-slate-400", tab !== 0);
 
-        // Show floating button ONLY in Today tab
-        document
-          .getElementById("float-btn")
-          .classList.toggle("hidden", tab !== 0);
+        document.getElementById("nav-calendar").classList.toggle("accent-color", tab === 1);
+        document.getElementById("nav-calendar").classList.toggle("text-slate-400", tab !== 1);
+
+        document.getElementById("nav-stats").classList.toggle("accent-color", tab === 2);
+        document.getElementById("nav-stats").classList.toggle("text-slate-400", tab !== 2);
+
+        document.getElementById("nav-bmi").classList.toggle("accent-color", tab === 3);
+        document.getElementById("nav-bmi").classList.toggle("text-slate-400", tab !== 3);
+
+        document.getElementById("nav-about").classList.toggle("accent-color", tab === 4);
+        document.getElementById("nav-about").classList.toggle("text-slate-400", tab !== 4);
+
+        // Show floating button only in Today tab
+        document.getElementById("float-btn").classList.toggle("hidden", tab !== 0);
       }
 
       function goToToday() {
