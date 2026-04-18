@@ -914,19 +914,18 @@
     <!-- Modal Content -->
     <div class="flex-1 overflow-y-auto p-6 space-y-8">
 
-      <!-- Used Storage -->
-      <div class="bg-white rounded-3xl border border-slate-100 p-6">
-        <div class="flex justify-between items-center mb-4">
-          <span class="text-sm font-medium text-slate-600">Used Storage</span>
-          <span id="modal-storage-used" class="font-semibold text-slate-700">0 KB</span>
-        </div>
-        <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
-          <div id="modal-storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
-        </div>
-        <p id="modal-storage-detail" class="text-xs text-slate-500 mt-4 text-center">
-          Local storage used by your tasks and habits
-        </p>
-      </div>
+     <div class="bg-white rounded-3xl border border-slate-100 p-6">
+  <div class="flex justify-between items-center mb-4">
+    <span class="text-sm font-medium text-slate-600">Used Storage</span>
+    <span id="modal-storage-used" class="font-semibold text-slate-700">0 KB</span>
+  </div>
+  <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
+    <div id="modal-storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
+  </div>
+  <p id="modal-storage-detail" class="text-xs text-slate-500 mt-4 text-center">
+    Local storage used by your tasks and habits
+  </p>
+</div>
 
       <!-- Clean Old Data -->
       <div>
@@ -1537,21 +1536,34 @@ function cleanOldData(keepDays) {
 
 function updateStorageInfo() {
   try {
-    let total = 0;
+    let totalBytes = 0;
+    
+    // Calculate actual localStorage usage
     for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
-        total += localStorage[key].length * 2; // rough bytes estimation
+        totalBytes += localStorage[key].length * 2; // UTF-16 uses 2 bytes per char
       }
     }
-    
-    const kbUsed = Math.round(total / 1024);
-    const percent = Math.min(Math.round((kbUsed / 5000) * 100), 100); // assuming 5MB limit for localStorage
 
-    document.getElementById("storage-used").textContent = `${kbUsed} KB`;
-    document.getElementById("storage-bar").style.width = `${percent}%`;
-    
-  } catch(e) {
-    document.getElementById("storage-used").textContent = "—";
+    const kbUsed = Math.round(totalBytes / 1024);
+    const maxKB = 5120; // ~5MB typical localStorage limit
+    const percent = Math.min(Math.round((kbUsed / maxKB) * 100), 100);
+
+    // Update modal elements
+    const usedEl = document.getElementById("modal-storage-used");
+    const barEl = document.getElementById("modal-storage-bar");
+    const detailEl = document.getElementById("modal-storage-detail");
+
+    if (usedEl) usedEl.textContent = `${kbUsed} KB`;
+    if (barEl) barEl.style.width = `${percent}%`;
+    if (detailEl) {
+      detailEl.textContent = `Local storage used by your tasks, habits & progress (${percent}% of ~5MB limit)`;
+    }
+
+  } catch (e) {
+    console.error("Storage calculation error:", e);
+    const usedEl = document.getElementById("modal-storage-used");
+    if (usedEl) usedEl.textContent = "— KB";
   }
 }
 
