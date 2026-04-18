@@ -12,200 +12,196 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+   <style>
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-      body {
-        font-family: "Inter", system-ui, sans-serif;
-        transition: background 0.4s ease;
-      }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    transition: background 0.4s ease;
+  }
 
-      .app-container {
-        max-width: 440px;
-        margin: 0 auto;
-        background: white;
-        min-height: 100vh;
-        box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
-        overflow: hidden;
-      }
+  .app-container {
+    max-width: 440px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
 
-      /* ==================== THEMES ==================== */
-      .theme-orange .accent-color {
-        color: #f97316;
-      }
-      .theme-orange .accent-bg {
-        background: linear-gradient(135deg, #f97316, #ea580c, #1f2937);
-      }
-      .theme-orange .header-gradient {
-        background: linear-gradient(
-          135deg,
-          #f97316 0%,
-          #ea580c 50%,
-          #1f2937 100%
-        );
-      }
+  /* ==================== THEMES ==================== */
+  .theme-orange .accent-color {
+    color: #f97316;
+  }
+  .theme-orange .accent-bg {
+    background: linear-gradient(135deg, #f97316, #ea580c, #1f2937);
+  }
+  .theme-orange .header-gradient {
+    background: linear-gradient(
+      135deg,
+      #f97316 0%,
+      #ea580c 50%,
+      #1f2937 100%
+    );
+  }
 
-      .theme-green .accent-color {
-        color: #10b981;
-      }
-      .theme-green .accent-bg {
-        background: linear-gradient(135deg, #10b981, #059669, #1f2937);
-      }
-      .theme-green .header-gradient {
-        background: linear-gradient(
-          135deg,
-          #10b981 0%,
-          #059669 50%,
-          #1f2937 100%
-        );
-      }
+  .theme-green .accent-color {
+    color: #10b981;
+  }
+  .theme-green .accent-bg {
+    background: linear-gradient(135deg, #10b981, #059669, #1f2937);
+  }
+  .theme-green .header-gradient {
+    background: linear-gradient(
+      135deg,
+      #10b981 0%,
+      #059669 50%,
+      #1f2937 100%
+    );
+  }
 
-      .theme-dark {
-        background: #0f172a;
-      }
-      .theme-dark .app-container {
-        background: #1e2937;
-      }
-      .theme-dark .accent-color {
-        color: #60a5fa;
-      }
-      .theme-dark .accent-bg {
-        background: linear-gradient(135deg, #3b82f6, #60a5fa);
-      }
-      .theme-dark .header-gradient {
-        background: linear-gradient(135deg, #1e40af, #3b82f6);
-      }
-      .theme-dark .bg-white {
-        background: #334155;
-        border-color: #475569;
-      }
-      .theme-dark .text-slate-700 {
-        color: #e2e8f0;
-      }
+  /* Violet / Purple Theme - New */
+  .theme-violet .accent-color {
+    color: #8b5cf6;
+  }
+  .theme-violet .accent-bg {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
+  }
+  .theme-violet .header-gradient {
+    background: linear-gradient(
+      135deg,
+      #8b5cf6 0%,
+      #7c3aed 45%,
+      #6d28d9 100%
+    );
+  }
 
-      /* Design Improvements */
-      .today-card {
-        padding: 20px !important;
-        border-radius: 20px;
-      }
-      #task-input {
-        padding: 16px 20px !important;
-        font-size: 16px;
-      }
-      .add-btn {
-        width: 60px !important;
-        height: 60px !important;
-        font-size: 28px;
-      }
-      .task-item {
-        padding: 16px 18px !important;
-        font-size: 15.8px;
-        border-radius: 20px;
-      }
-      .header-gradient {
-        padding: 16px 20px 22px;
-      }
-      .p-6 {
-        margin-top: 10px;
-      }
+  /* Design Improvements */
+  .today-card {
+    padding: 20px !important;
+    border-radius: 20px;
+  }
+  #task-input {
+    padding: 16px 20px !important;
+    font-size: 16px;
+  }
+  .add-btn {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 28px;
+  }
+  .task-item {
+    padding: 16px 18px !important;
+    font-size: 15.8px;
+    border-radius: 20px;
+  }
+  .header-gradient {
+    padding: 16px 20px 22px;
+  }
 
-      .add-btn {
-        width: 10px;
-        height: 10px;
-        font-size: 18px;
-      }
+  .about-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .feature-item {
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 16px;
+  }
 
-      .about-card {
-        padding: 20px;
-        border-radius: 20px;
-      }
-      .feature-item {
-        padding: 16px;
-        background: #f8fafc;
-        border-radius: 16px;
-      }
-      .theme-dark .feature-item {
-        background: #334155;
-      }
+  /* Completed Task - Better Strikethrough */
+  .task-item.completed {
+    opacity: 0.85;
+    position: relative;
+  }
 
-      /* Completed Task - Better Strikethrough */
-      .task-item.completed {
-        opacity: 0.85;
-        position: relative;
-      }
+  .task-item.completed span {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: #64748b;
+    color: #64748b;
+    font-weight: 500;
+  }
 
-      .task-item.completed span {
-        text-decoration: line-through;
-        text-decoration-thickness: 1px;
-        text-decoration-color: black; /* Red strike for better visibility */
-        color: #64748b;
-        font-weight: 500;
-      }
+  /* Calendar Styles */
+  .calendar-day {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .calendar-day.green {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    color: white;
+    font-weight: 700;
+  }
+  .calendar-day.red {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    color: white;
+    font-weight: 700;
+  }
+  .calendar-day.future {
+    opacity: 0.65;
+    background: #f1f5f9;
+  }
+  .calendar-day.today {
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.6);
+  }
+  .calendar-day.selected {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.6);
+  }
+  .calendar-day.has-tasks::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: #fbbf24;
+    border-radius: 50%;
+  }
+  .weekdays {
+    background: #1e2937;
+    color: white;
+    border-radius: 16px;
+    padding: 8px 0;
+  }
 
-      .theme-dark .task-item.completed span {
-        text-decoration-color: #f87171;
-        color: #94a3b8;
-      }
+  .calendar-nav-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 26px;
+  }
 
-      /* Calendar Styles - FIXED MARKING COLORS */
-      .calendar-day {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-      .calendar-day.green {
-        background: linear-gradient(135deg, #10b981, #34d399);
-        color: white;
-        font-weight: 700;
-      }
-      .calendar-day.red {
-        background: linear-gradient(135deg, #ef4444, #f87171);
-        color: white;
-        font-weight: 700;
-      }
-      .calendar-day.future {
-        opacity: 0.65;
-        background: #f1f5f9;
-      }
-      .calendar-day.today {
-        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.6);
-      }
-      .calendar-day.selected {
-        transform: scale(1.12);
-        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.6);
-      }
-      .calendar-day.has-tasks::after {
-        content: "";
-        position: absolute;
-        bottom: 6px;
-        right: 6px;
-        width: 8px;
-        height: 8px;
-        background: #fbbf24;
-        border-radius: 50%;
-      }
-      .weekdays {
-        background: #1e2937;
-        color: white;
-        border-radius: 16px;
-        padding: 8px 0;
-      }
+  .mark-btn,
+  .open-tasks-btn {
+    padding: 14px 20px;
+    font-size: 15.5px;
+    border-radius: 20px;
+  }
 
-      .calendar-nav-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 26px;
-      }
+  .bottom-nav {
+    padding: 14px 20px !important;
+  }
 
-      .mark-btn,
-      .open-tasks-btn {
-        padding: 14px 20px;
-        font-size: 15.5px;
-        border-radius: 20px;
-      }
-
-      .bottom-nav {
-        padding: 14px 20px !important;
-      }
-    </style>
+  .p-6{
+    margin-top: 20px;
+  }
+  /* Custom User Theme */
+.theme-custom .accent-color {
+  color: var(--accent, #8b5cf6);
+}
+.theme-custom .accent-bg {
+  background: linear-gradient(135deg, 
+    var(--accent-start, #8b5cf6), 
+    var(--accent-mid, #7c3aed), 
+    var(--accent-end, #6d28d9));
+}
+.theme-custom .header-gradient {
+  background: linear-gradient(135deg, 
+    var(--accent-start, #8b5cf6) 0%, 
+    var(--accent-mid, #7c3aed) 50%, 
+    var(--accent-end, #6d28d9) 100%);
+}
+</style>
   </head>
   <body class="theme-orange min-h-screen pb-20">
     <div class="app-container">
@@ -528,115 +524,113 @@
             </div>
           </div>
         </div>
-                <!-- ==================== ABOUT VIEW ==================== -->
-        <div id="view-about" class="hidden pt-4 pb-10">
-          <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
-            <div class="text-center mb-8">
-              <div class="w-20 h-20 mx-auto accent-bg rounded-2xl flex items-center justify-center text-white text-5xl mb-4 shadow-lg">
-                <i class="fas fa-water"></i>
-              </div>
-              <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
-              <p class="text-slate-500 mt-1 text-sm">Version 1.3 • Built for better days</p>
-            </div>
+<!-- ==================== SETTINGS VIEW ==================== -->
+<div id="view-settings" class="hidden pt-4 pb-10">
+  <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 mx-0">
 
-            <div class="space-y-8">
-              <!-- About -->
-              <div>
-                <h2 class="text-xl font-semibold accent-color mb-3 flex items-center gap-2">
-                  <i class="fas fa-info-circle"></i> About Daily Flow
-                </h2>
-                <p class="text-slate-600 leading-relaxed text-[15px]">
-                  Daily Flow is a clean and simple daily planner that helps you build consistent habits, 
-                  manage your tasks, and track your progress every day with joy and intention.
-                </p>
-              </div>
+    <h2 class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8">
+      <i class="fas fa-cog"></i> Settings
+    </h2>
 
-              <!-- Key Features -->
-              <div>
-                <h2 class="text-xl font-semibold accent-color mb-4 flex items-center gap-2">
-                  <i class="fas fa-star"></i> Key Features
-                </h2>
-                <div class="grid grid-cols-1 gap-4">
-                  <div class="feature-item flex gap-4 items-start">
-                    <div class="text-2xl accent-color mt-0.5">🔄</div>
-                    <div class="flex-1">
-                      <h4 class="font-semibold">Recurring Habits</h4>
-                      <p class="text-sm text-slate-600">Repeat daily or on specific weekdays</p>
-                    </div>
-                  </div>
-                  <div class="feature-item flex gap-4 items-start">
-                    <div class="text-2xl accent-color mt-0.5">📅</div>
-                    <div class="flex-1">
-                      <h4 class="font-semibold">One-time Tasks</h4>
-                      <p class="text-sm text-slate-600">Tasks for specific days with optional time</p>
-                    </div>
-                  </div>
-                  <div class="feature-item flex gap-4 items-start">
-                    <div class="text-2xl accent-color mt-0.5">🎨</div>
-                    <div class="flex-1">
-                      <h4 class="font-semibold">Beautiful Calendar</h4>
-                      <p class="text-sm text-slate-600">Mark days green/red to track consistency</p>
-                    </div>
-                  </div>
-                  <div class="feature-item flex gap-4 items-start">
-                    <div class="text-2xl accent-color mt-0.5">📊</div>
-                    <div class="flex-1">
-                      <h4 class="font-semibold">Progress Tracking</h4>
-                      <p class="text-sm text-slate-600">Live progress bar and monthly stats</p>
-                    </div>
-                  </div>
-                  <div class="feature-item flex gap-4 items-start">
-                    <div class="text-2xl accent-color mt-0.5">⚖️</div>
-                    <div class="flex-1">
-                      <h4 class="font-semibold">BMI Calculator</h4>
-                      <p class="text-sm text-slate-600">Quick built-in health tracker</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <!-- Default Themes -->
+    <div class="mb-10">
+      <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
+        <i class="fas fa-palette"></i> Default Themes
+      </h3>
+      <div class="grid grid-cols-3 gap-4" id="default-themes">
+        <!-- Populated by JS -->
+      </div>
+    </div>
 
-              <!-- How to Use -->
-              <div>
-                <h2 class="text-xl font-semibold accent-color mb-4 flex items-center gap-2">
-                  <i class="fas fa-book"></i> How to Use
-                </h2>
-                <div class="space-y-6 text-[15px]">
-                  <div>
-                    <h4 class="font-semibold text-slate-700 mb-1.5">Adding Tasks</h4>
-                    <p class="text-slate-600">Type your task and tap the + button.<br>
-                    Select weekdays = Recurring habit<br>
-                    No days selected = One-time task</p>
-                  </div>
-                  <div>
-                    <h4 class="font-semibold text-slate-700 mb-1.5">Calendar</h4>
-                    <p class="text-slate-600">Tap any day to mark it Green (good day) or Red.<br>
-                    You can also add tasks directly in calendar view.</p>
-                  </div>
-                </div>
-              </div>
+    <!-- Popular Colors -->
+    <div class="mb-10">
+      <h3 class="text-lg font-semibold mb-4 text-slate-700">Popular Colors</h3>
+      <div id="color-palette" class="grid grid-cols-6 gap-3">
+        <!-- Populated by JS -->
+      </div>
+    </div>
 
-              <!-- Pro Tips -->
-              <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
-                <h3 class="font-semibold text-amber-700 mb-3 flex items-center gap-2">
-                  <i class="fas fa-lightbulb"></i> Pro Tips
-                </h3>
-                <ul class="text-sm text-amber-700 space-y-2">
-                  <li>• Tap on task text to edit it</li>
-                  <li>• Drag & drop tasks to reorder</li>
-                  <li>• Tap the time below a task to set reminder</li>
-                  <li>• Use floating button to jump back to Today</li>
-                  <li>• Mark calendar days consistently to build streaks</li>
-                </ul>
-              </div>
-            </div>
+    <!-- Custom Color -->
+    <div class="mb-10">
+      <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
+        <i class="fas fa-paint-brush"></i> Custom Color Theme
+      </h3>
+      <div class="bg-slate-50 rounded-3xl p-6 flex flex-col items-center gap-5">
+        <input 
+          type="color" 
+          id="custom-color-picker"
+          value="#8b5cf6"
+          class="w-11 h-11 rounded-2xl cursor-pointer border-4 border-white shadow-md overflow-hidden"
+        >
+        <button onclick="applyCustomColor()" 
+                class="accent-bg text-white px-8 py-3.5 rounded-3xl font-semibold text-sm active:scale-95 transition w-full max-w-[240px]">
+          Apply This Color as Theme
+        </button>
+        <p class="text-xs text-slate-500 text-center">
+          Choose any color you love.<br>The app will create a beautiful gradient automatically.
+        </p>
+      </div>
+    </div>
 
-            <div class="mt-12 text-center text-xs text-slate-400">
-              Thank you for using Daily Flow ✨<br>
-              One day at a time.
-            </div>
-          </div>
+   <!-- Storage Section -->
+<div class="mb-10 bg-slate-50 rounded-3xl p-6">
+  <div class="flex items-center gap-3 mb-5">
+    <i class="fas fa-database text-xl accent-color"></i>
+    <h3 class="text-lg font-semibold text-slate-700">Storage</h3>
+  </div>
+  
+  <div class="bg-white rounded-2xl p-5 mb-6">
+    <div class="flex justify-between items-center mb-3">
+      <span class="text-sm text-slate-600">Used Storage</span>
+      <span id="storage-used" class="font-medium text-slate-700">0 KB</span>
+    </div>
+    <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div id="storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
+    </div>
+    <p id="storage-detail" class="text-xs text-slate-500 mt-3 text-center">
+      Local storage used by your tasks and habits
+    </p>
+  </div>
+
+  <!-- Clean Old Data -->
+  <div class="mb-6">
+    <h4 class="font-medium text-slate-700 mb-3">Clean Old Data</h4>
+    <p class="text-xs text-slate-500 mb-4">Keep recent data and delete everything older</p>
+    
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <button onclick="cleanOldData(30)"  class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 1 Month</button>
+      <button onclick="cleanOldData(90)"  class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 3 Months</button>
+      <button onclick="cleanOldData(180)" class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 6 Months</button>
+      <button onclick="cleanOldData(365)" class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 1 Year</button>
+    </div>
+  </div>
+
+  <!-- Full Reset -->
+  <button onclick="resetAllData()" 
+          class="w-full py-4 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-3xl transition flex items-center justify-center gap-2">
+    <i class="fas fa-trash"></i>
+    Clear ALL Data & Reset App
+  </button>
+</div>
+
+    <!-- About Button -->
+    <div onclick="showAboutModal()" 
+         class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer">
+      <div class="flex items-center gap-4">
+        <div class="w-11 h-11 accent-bg rounded-2xl flex items-center justify-center text-white text-2xl">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg">About Daily Flow</h4>
+          <p class="text-sm text-slate-500">App info, features & tips</p>
         </div>
       </div>
+      <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
+    </div>
+
+  </div>
+</div>
+
     </div>
 
     <!-- Floating "Go to Today" Button - Visible only in Today Tab -->
@@ -653,49 +647,31 @@
         <i class="fas fa-home text-2xl"></i>
       </button>
     </div>
-    <!-- Bottom Navigation -->
-    <div
-      class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 py-4 px-6 z-50"
-    >
-      <div class="flex justify-around">
-        <div
-          onclick="switchTab(0)"
-          id="nav-today"
-          class="flex flex-col items-center cursor-pointer accent-color"
-        >
-          <i class="fas fa-home text-2xl"></i>
-          <span class="text-xs font-medium mt-1">Today</span>
-        </div>
-        <div
-          onclick="switchTab(1)"
-          id="nav-calendar"
-          class="flex flex-col items-center cursor-pointer text-slate-400"
-        >
-          <i class="fas fa-calendar-alt text-2xl"></i>
-          <span class="text-xs font-medium mt-1">Calendar</span>
-        </div>
-        <div
-          onclick="switchTab(2)"
-          id="nav-stats"
-          class="flex flex-col items-center cursor-pointer text-slate-400"
-        >
-          <i class="fas fa-chart-simple text-2xl"></i>
-          <span class="text-xs font-medium mt-1">Stats</span>
-        </div>
-        <div
-          onclick="switchTab(3)"
-          id="nav-bmi"
-          class="flex flex-col items-center cursor-pointer text-slate-400"
-        >
-          <i class="fas fa-weight-scale text-2xl"></i>
-          <span class="text-xs font-medium mt-1">BMI</span>
-        </div>
-        <div onclick="switchTab(4)" id="nav-about" class="flex flex-col items-center cursor-pointer text-slate-400">
-          <i class="fas fa-info-circle text-2xl"></i>
-          <span class="text-xs font-medium mt-1">About</span>
-        </div>
-      </div>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 py-4 px-6 z-50">
+  <div class="flex justify-around">
+    <div onclick="switchTab(0)" id="nav-today" class="flex flex-col items-center cursor-pointer accent-color">
+      <i class="fas fa-home text-2xl"></i>
+      <span class="text-xs font-medium mt-1">Today</span>
     </div>
+    <div onclick="switchTab(1)" id="nav-calendar" class="flex flex-col items-center cursor-pointer text-slate-400">
+      <i class="fas fa-calendar-alt text-2xl"></i>
+      <span class="text-xs font-medium mt-1">Calendar</span>
+    </div>
+    <div onclick="switchTab(2)" id="nav-stats" class="flex flex-col items-center cursor-pointer text-slate-400">
+      <i class="fas fa-chart-simple text-2xl"></i>
+      <span class="text-xs font-medium mt-1">Stats</span>
+    </div>
+    <div onclick="switchTab(3)" id="nav-bmi" class="flex flex-col items-center cursor-pointer text-slate-400">
+      <i class="fas fa-weight-scale text-2xl"></i>
+      <span class="text-xs font-medium mt-1">BMI</span>
+    </div>
+    <div onclick="switchTab(4)" id="nav-settings" class="flex flex-col items-center cursor-pointer text-slate-400">
+      <i class="fas fa-cog text-2xl"></i>
+      <span class="text-xs font-medium mt-1">Settings</span>
+    </div>
+  </div>
+</div>
 
     <input type="date" id="hidden-date-picker" class="hidden" />
 
@@ -722,6 +698,121 @@
       </div>
     </div>
 
+    <!-- About Modal (Scrollable Popup) -->
+<div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+  <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 accent-bg rounded-2xl flex items-center justify-center text-white">
+          <i class="fas fa-water"></i>
+        </div>
+        <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
+      </div>
+      <button onclick="hideAboutModal()" 
+              class="w-9 h-9 flex items-center justify-center text-2xl text-slate-400 hover:text-slate-600 transition">
+        ×
+      </button>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
+      
+      <div class="text-center">
+        <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
+        <p class="text-slate-500 mt-1">Version 1.4 • Built for better days</p>
+      </div>
+
+      <div>
+        <p class="text-slate-600 leading-relaxed text-[15.5px]">
+          Daily Flow is a clean and simple daily planner that helps you build consistent habits, 
+          manage your tasks, and track your progress every day with joy and intention.
+        </p>
+      </div>
+
+      <!-- Key Features -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-star"></i> Key Features
+        </h3>
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <div class="text-3xl accent-color mt-1">🔄</div>
+            <div class="flex-1">
+              <h4 class="font-semibold">Recurring Habits</h4>
+              <p class="text-sm text-slate-600">Repeat daily or on specific weekdays</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl accent-color mt-1">📅</div>
+            <div class="flex-1">
+              <h4 class="font-semibold">One-time Tasks</h4>
+              <p class="text-sm text-slate-600">Tasks for specific days with optional time</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl accent-color mt-1">🎨</div>
+            <div class="flex-1">
+              <h4 class="font-semibold">Beautiful Calendar</h4>
+              <p class="text-sm text-slate-600">Mark days green/red to track consistency</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl accent-color mt-1">📊</div>
+            <div class="flex-1">
+              <h4 class="font-semibold">Progress Tracking</h4>
+              <p class="text-sm text-slate-600">Live progress bar and monthly stats</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Use -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-book"></i> How to Use
+        </h3>
+        <div class="space-y-6 text-[15px]">
+          <div>
+            <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
+            <p class="text-slate-600 mt-1">Type your task and tap the + button.<br>
+            Select weekdays = Recurring habit<br>
+            No days selected = One-time task</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-slate-700">Calendar</h4>
+            <p class="text-slate-600 mt-1">Tap any day to mark it Green (good day) or Red.<br>
+            You can also add tasks directly from calendar view.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro Tips -->
+      <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
+        <h3 class="font-semibold text-amber-700 mb-4 flex items-center gap-2">
+          <i class="fas fa-lightbulb"></i> Pro Tips
+        </h3>
+        <ul class="text-sm text-amber-700 space-y-2.5">
+          <li>• Tap on task text to edit it</li>
+          <li>• Drag & drop tasks to reorder</li>
+          <li>• Tap the time below a task to set reminder</li>
+          <li>• Use floating button to jump back to Today</li>
+          <li>• Mark calendar days consistently to build streaks</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
+      Thank you for using Daily Flow ✨<br>
+      One day at a time.
+    </div>
+  </div>
+</div>
+
+
     <script>
       // ================== FULL ORIGINAL FUNCTIONALITY + DESIGN FIXES ==================
       let selectedDateKey = "";
@@ -740,12 +831,25 @@
       let currentCalendarMonth = new Date().getMonth();
       let currentCalendarYear = new Date().getFullYear();
       let selectedCalendarDayKey = null;
+      let customAccentColor = "#8b5cf6";
 
       function generateId() {
         return (
           Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
         );
       }
+
+     function changeTheme(theme) {
+  currentTheme = theme;
+  applyTheme();
+  saveData();
+  renderAll();
+
+  // Refresh the default themes to show correct active border
+  if (!document.getElementById("view-settings").classList.contains("hidden")) {
+    renderDefaultThemes();
+  }
+}
 
       function saveData() {
         localStorage.setItem("recurringTasks", JSON.stringify(recurringTasks));
@@ -757,9 +861,11 @@
         localStorage.setItem("calendarMarks", JSON.stringify(calendarMarks));
         localStorage.setItem("currentTheme", currentTheme);
         localStorage.setItem("savedBMI", JSON.stringify(savedBMI)); // New
+        localStorage.setItem("customAccentColor", customAccentColor);
       }
 
       function loadData() {
+        customAccentColor = localStorage.getItem("customAccentColor") || "#8b5cf6";
         recurringTasks =
           JSON.parse(localStorage.getItem("recurringTasks")) || [];
         oneTimeTasks = JSON.parse(localStorage.getItem("oneTimeTasks")) || {};
@@ -774,23 +880,126 @@
         };
       }
 
-      function applyTheme() {
-        document.body.classList.remove(
-          "theme-orange",
-          "theme-green",
-          "theme-dark",
-        );
-        document.body.classList.add(`theme-${currentTheme}`);
-      }
+    function applyTheme() {
+  document.body.classList.remove("theme-orange", "theme-green", "theme-violet", "theme-custom");
+  
+  if (currentTheme === "custom") {
+    document.body.classList.add("theme-custom");
+    document.documentElement.style.setProperty('--accent', customAccentColor);
+    document.documentElement.style.setProperty('--accent-start', customAccentColor);
+    // Generate nice mid and end colors automatically
+    document.documentElement.style.setProperty('--accent-mid', adjustColor(customAccentColor, -20));
+    document.documentElement.style.setProperty('--accent-end', adjustColor(customAccentColor, -40));
+  } else {
+    document.body.classList.add(`theme-${currentTheme}`);
+  }
+}
 
-      function toggleTheme() {
-        const themes = ["orange", "green", "dark"];
-        let index = themes.indexOf(currentTheme);
-        currentTheme = themes[(index + 1) % 3];
-        applyTheme();
-        saveData();
-        renderAll();
-      }
+function adjustColor(hex, percent) {
+  let r = parseInt(hex.slice(1,3),16);
+  let g = parseInt(hex.slice(3,5),16);
+  let b = parseInt(hex.slice(5,7),16);
+  
+  r = Math.min(255, Math.max(0, Math.round(r * (1 + percent/100))));
+  g = Math.min(255, Math.max(0, Math.round(g * (1 + percent/100))));
+  b = Math.min(255, Math.max(0, Math.round(b * (1 + percent/100))));
+  
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// Apply custom color
+function applyCustomColor() {
+  const picker = document.getElementById("custom-color-picker");
+  customAccentColor = picker.value;
+  currentTheme = "custom";
+  applyTheme();
+  saveData();
+  renderAll();
+}
+
+// Render default theme cards (better than static)
+function renderDefaultThemes() {
+  const container = document.getElementById("default-themes");
+  container.innerHTML = `
+    <div onclick="setDefaultTheme('orange')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'orange' ? 'border-orange-500 scale-105' : 'border-transparent hover:border-orange-300'}">
+      <div class="h-28 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      </div>
+      <div class="p-3 text-center font-medium text-sm">Orange</div>
+    </div>
+
+    <div onclick="setDefaultTheme('green')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'green' ? 'border-emerald-500 scale-105' : 'border-transparent hover:border-emerald-300'}">
+      <div class="h-28 bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      </div>
+      <div class="p-3 text-center font-medium text-sm">Green</div>
+    </div>
+
+    <div onclick="setDefaultTheme('violet')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'violet' ? 'border-violet-500 scale-105' : 'border-transparent hover:border-violet-300'}">
+      <div class="h-28 bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-600 flex items-center justify-center">
+        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      </div>
+      <div class="p-3 text-center font-medium text-sm">Violet</div>
+    </div>
+  `;
+}
+
+function setDefaultTheme(theme) {
+  currentTheme = theme;
+  applyTheme();
+  saveData();
+  renderAll();
+  renderDefaultThemes();   // Important: Refresh active state
+}
+
+// Popular preset colors (beautiful & modern)
+const popularColors = [
+   "#1f2937",
+  "#0ea5e9", // sky blue
+  "#22c55e", // green
+  "#f59e0b", // amber
+  "#ec4899", // pink
+  "#fbbf24"
+];
+
+function renderColorPalette() {
+  const container = document.getElementById("color-palette");
+  container.innerHTML = "";
+
+  popularColors.forEach(color => {
+    const isActive = currentTheme === "custom" && customAccentColor.toLowerCase() === color.toLowerCase();
+
+    const div = document.createElement("div");
+    div.className = `w-11 h-11 rounded-2xl cursor-pointer ring-2 transition-all shadow-sm ${isActive ? 'ring-offset-2 ring-blue-500 scale-110' : 'hover:scale-110'}`;
+    div.style.backgroundColor = color;
+    div.onclick = () => {
+      customAccentColor = color;
+      currentTheme = "custom";
+      applyTheme();
+      saveData();
+      renderAll();
+      renderDefaultThemes();
+      renderColorPalette();   // Refresh active ring
+    };
+    container.appendChild(div);
+  });
+}
+
+// Update your existing toggleTheme() 
+function toggleTheme() {
+  const themes = ["orange", "green", "violet", "custom"];
+  let index = themes.indexOf(currentTheme);
+  currentTheme = themes[(index + 1) % themes.length];
+  
+  applyTheme();
+  saveData();
+  renderAll();
+
+  // Refresh settings if open
+  if (!document.getElementById("view-settings").classList.contains("hidden")) {
+    renderDefaultThemes();
+  }
+}
 
       function getTodayKey() {
         return new Date().toISOString().split("T")[0];
@@ -840,6 +1049,60 @@
         });
       }
 
+
+      // Reset all app data
+function resetAllData() {
+  if (confirm("⚠️ This will delete ALL your tasks, habits, and progress.\n\nAre you sure?")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+// Clean old data - keep only recent N days
+function cleanOldData(keepDays) {
+  if (!confirm(`This will delete ALL data older than ${keepDays} days.\n\nRecent ${keepDays} days of tasks and history will be kept.\n\nAre you sure?`)) {
+    return;
+  }
+
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - keepDays);
+  const cutoffKey = cutoffDate.toISOString().split('T')[0];
+
+  let deletedCount = 0;
+
+  // 1. Delete old one-time tasks
+  for (let dateKey in oneTimeTasks) {
+    if (dateKey < cutoffKey) {
+      delete oneTimeTasks[dateKey];
+      deletedCount++;
+    }
+  }
+
+  // 2. Delete old recurring completions
+  for (let dateKey in recurringCompletions) {
+    if (dateKey < cutoffKey) {
+      delete recurringCompletions[dateKey];
+    }
+  }
+
+  // 3. Delete old calendar marks
+  for (let dateKey in calendarMarks) {
+    if (dateKey < cutoffKey) {
+      delete calendarMarks[dateKey];
+    }
+  }
+
+  saveData();
+  updateStorageInfo();
+
+  alert(`Cleanup completed!\nDeleted data older than ${keepDays} days.\n\nYou now only have the past ${keepDays} days of history.`);
+
+  // Refresh if user is on Today or Calendar
+  if (!document.getElementById("view-settings").classList.contains("hidden")) {
+    renderAll();
+  }
+}
+
       function toggleRepeatDay(index) {
         if (currentRepeatDays.includes(index)) {
           currentRepeatDays = currentRepeatDays.filter((d) => d !== index);
@@ -872,19 +1135,31 @@
         return taskColors[Math.abs(hash) % taskColors.length];
       }
 
-      function calculateProgress(dateKey) {
-        const recurringCount = recurringTasks.length;
-        const recurringCompleted = recurringCompletions[dateKey]
-          ? Object.values(recurringCompletions[dateKey]).filter(Boolean).length
-          : 0;
-        const oneTimeList = oneTimeTasks[dateKey] || [];
-        const oneTimeCompleted = oneTimeList.filter((t) => t.completed).length;
-        const total = recurringCount + oneTimeList.length;
-        const completed = recurringCompleted + oneTimeCompleted;
-        const percentage =
-          total > 0 ? Math.round((completed / total) * 100) : 0;
-        return { total, completed, percentage };
-      }
+     function calculateProgress(dateKey) {
+  const date = new Date(dateKey);
+  const dayOfWeek = date.getDay();
+
+  const visibleRecurring = recurringTasks.filter(task => {
+    const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
+    const createdMatch = !task.createdDate || task.createdDate <= dateKey;
+    return weekdayMatch && createdMatch;
+  });
+
+  const recurringCount = visibleRecurring.length;
+
+  const recurringCompleted = recurringCompletions[dateKey]
+    ? Object.values(recurringCompletions[dateKey]).filter(Boolean).length
+    : 0;
+
+  const oneTimeList = oneTimeTasks[dateKey] || [];
+  const oneTimeCompleted = oneTimeList.filter((t) => t.completed).length;
+
+  const total = recurringCount + oneTimeList.length;
+  const completed = recurringCompleted + oneTimeCompleted;
+  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  return { total, completed, percentage };
+}
 
       function updateProgress() {
         const { completed, total, percentage } =
@@ -900,9 +1175,15 @@
         const today = new Date(selectedDateKey);
         const dayOfWeek = today.getDay();
 
-        const visibleTasks = recurringTasks.filter((task) => {
-          return !task.repeatDays || task.repeatDays.includes(dayOfWeek);
-        });
+       const visibleTasks = recurringTasks.filter((task) => {
+  // First, check weekday match
+  const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
+
+  // Second, check if the habit was created on or before this date
+  const createdMatch = !task.createdDate || task.createdDate <= selectedDateKey;
+
+  return weekdayMatch && createdMatch;
+});
 
         visibleTasks.forEach((task) => {
           const completed =
@@ -1035,6 +1316,26 @@
         enableDragAndDrop("onetime-list", false);
       }
 
+function updateStorageInfo() {
+  try {
+    let total = 0;
+    for (let key in localStorage) {
+      if (localStorage.hasOwnProperty(key)) {
+        total += localStorage[key].length * 2; // rough bytes estimation
+      }
+    }
+    
+    const kbUsed = Math.round(total / 1024);
+    const percent = Math.min(Math.round((kbUsed / 5000) * 100), 100); // assuming 5MB limit for localStorage
+
+    document.getElementById("storage-used").textContent = `${kbUsed} KB`;
+    document.getElementById("storage-bar").style.width = `${percent}%`;
+    
+  } catch(e) {
+    document.getElementById("storage-used").textContent = "—";
+  }
+}
+
       // Show one-time tasks when a date is selected in Calendar
       function renderSelectedDayTasks() {
         const container = document.getElementById("selected-day-panel");
@@ -1133,53 +1434,48 @@
       }
 
       function addTask() {
-        const text = document.getElementById("task-input").value.trim();
-        if (!text) return;
+  const text = document.getElementById("task-input").value.trim();
+  if (!text) return;
 
-        const time = document.getElementById("task-time").value || null;
+  const time = document.getElementById("task-time").value || null;
 
-        const isRecurring = currentRepeatDays.length > 0;
-        const isDaily = currentRepeatDays.length === 7;
+  const isRecurring = currentRepeatDays.length > 0;
 
-        if (isRecurring) {
-          // Check for duplicate recurring task
-          if (
-            recurringTasks.some(
-              (t) => t.text.toLowerCase() === text.toLowerCase(),
-            )
-          ) {
-            alert("This habit already exists!");
-            return;
-          }
+  if (isRecurring) {
+    // Check for duplicate
+    if (recurringTasks.some(t => t.text.toLowerCase() === text.toLowerCase())) {
+      alert("This habit already exists!");
+      return;
+    }
 
-          recurringTasks.push({
-            id: generateId(),
-            text: text,
-            time: time,
-            repeatDays: [...currentRepeatDays], // Save selected days
-          });
-        } else {
-          // One-time task
-          if (!oneTimeTasks[selectedDateKey])
-            oneTimeTasks[selectedDateKey] = [];
-          oneTimeTasks[selectedDateKey].push({
-            id: generateId(),
-            text: text,
-            completed: false,
-            time: time,
-          });
-        }
+    recurringTasks.push({
+      id: generateId(),
+      text: text,
+      time: time,
+      repeatDays: [...currentRepeatDays],
+      createdDate: selectedDateKey   // ← Important: Record when it was created
+    });
+  } else {
+    // One-time task
+    if (!oneTimeTasks[selectedDateKey]) oneTimeTasks[selectedDateKey] = [];
+    oneTimeTasks[selectedDateKey].push({
+      id: generateId(),
+      text: text,
+      completed: false,
+      time: time
+    });
+  }
 
-        saveData();
+  saveData();
 
-        // Reset form
-        document.getElementById("task-input").value = "";
-        document.getElementById("task-time").value = "";
-        currentRepeatDays = [];
-        renderWeekdaySelector();
+  // Reset form
+  document.getElementById("task-input").value = "";
+  document.getElementById("task-time").value = "";
+  currentRepeatDays = [];
+  renderWeekdaySelector();
 
-        renderAll();
-      }
+  renderAll();
+}
 
       window.addTaskFromCalendar = function () {
         const input = document.getElementById("calendar-task-input");
@@ -1541,34 +1837,42 @@
       }
 
             function switchTab(tab) {
-        document.getElementById("view-today").classList.toggle("hidden", tab !== 0);
-        document.getElementById("view-calendar").classList.toggle("hidden", tab !== 1);
-        document.getElementById("view-stats").classList.toggle("hidden", tab !== 2);
-        document.getElementById("view-bmi").classList.toggle("hidden", tab !== 3);
-        document.getElementById("view-about").classList.toggle("hidden", tab !== 4);
+  // Toggle view visibility
+  document.getElementById("view-today").classList.toggle("hidden", tab !== 0);
+  document.getElementById("view-calendar").classList.toggle("hidden", tab !== 1);
+  document.getElementById("view-stats").classList.toggle("hidden", tab !== 2);
+  document.getElementById("view-bmi").classList.toggle("hidden", tab !== 3);
+  document.getElementById("view-settings").classList.toggle("hidden", tab !== 4);   // New Settings view
 
-        if (tab === 1) renderCalendar();
-        if (tab === 2) renderStats();
+  // Render specific views when opened
+  if (tab === 1) renderCalendar();
+  if (tab === 2) renderStats();
+  if (tab === 4) {
+  renderDefaultThemes();
+  renderColorPalette();
+  updateStorageInfo();
+}
 
-        // Bottom nav active states
-        document.getElementById("nav-today").classList.toggle("accent-color", tab === 0);
-        document.getElementById("nav-today").classList.toggle("text-slate-400", tab !== 0);
+  // Bottom nav active states
+  document.getElementById("nav-today").classList.toggle("accent-color", tab === 0);
+  document.getElementById("nav-today").classList.toggle("text-slate-400", tab !== 0);
 
-        document.getElementById("nav-calendar").classList.toggle("accent-color", tab === 1);
-        document.getElementById("nav-calendar").classList.toggle("text-slate-400", tab !== 1);
+  document.getElementById("nav-calendar").classList.toggle("accent-color", tab === 1);
+  document.getElementById("nav-calendar").classList.toggle("text-slate-400", tab !== 1);
 
-        document.getElementById("nav-stats").classList.toggle("accent-color", tab === 2);
-        document.getElementById("nav-stats").classList.toggle("text-slate-400", tab !== 2);
+  document.getElementById("nav-stats").classList.toggle("accent-color", tab === 2);
+  document.getElementById("nav-stats").classList.toggle("text-slate-400", tab !== 2);
 
-        document.getElementById("nav-bmi").classList.toggle("accent-color", tab === 3);
-        document.getElementById("nav-bmi").classList.toggle("text-slate-400", tab !== 3);
+  document.getElementById("nav-bmi").classList.toggle("accent-color", tab === 3);
+  document.getElementById("nav-bmi").classList.toggle("text-slate-400", tab !== 3);
 
-        document.getElementById("nav-about").classList.toggle("accent-color", tab === 4);
-        document.getElementById("nav-about").classList.toggle("text-slate-400", tab !== 4);
+  // Updated: Now using nav-settings instead of nav-about
+  document.getElementById("nav-settings").classList.toggle("accent-color", tab === 4);
+  document.getElementById("nav-settings").classList.toggle("text-slate-400", tab !== 4);
 
-        // Show floating button only in Today tab
-        document.getElementById("float-btn").classList.toggle("hidden", tab !== 0);
-      }
+  // Show floating "Go to Today" button only in Today tab
+  document.getElementById("float-btn").classList.toggle("hidden", tab !== 0);
+}
 
       function goToToday() {
         selectedDateKey = getTodayKey(); // Go back to actual today
@@ -1728,6 +2032,22 @@
         ).element;
       }
 
+
+      function showAboutModal() {
+  document.getElementById("about-modal").classList.remove("hidden");
+  document.getElementById("about-modal").classList.add("flex");
+}
+
+function hideAboutModal() {
+  document.getElementById("about-modal").classList.add("hidden");
+  document.getElementById("about-modal").classList.remove("flex");
+}
+
+// Optional: Close modal when clicking outside the content
+document.getElementById("about-modal").addEventListener("click", function(e) {
+  if (e.target === this) hideAboutModal();
+});
+
       // ====================== DRAGGABLE FLOATING BUTTON ======================
       let isDragging = false;
       let currentX, currentY, initialX, initialY;
@@ -1808,6 +2128,8 @@
 
         renderAll();
         switchTab(0);
+        renderDefaultThemes();
+        renderColorPalette();
 
         document
           .getElementById("task-input")
