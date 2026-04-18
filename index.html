@@ -8,6 +8,8 @@
     />
     <title>Daily Flow</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -560,57 +562,43 @@
           type="color" 
           id="custom-color-picker"
           value="#8b5cf6"
-          class="w-11 h-11 rounded-2xl cursor-pointer border-4 border-white shadow-md overflow-hidden"
+          class="w-110 h-11 cursor-pointer border-4 border-white shadow-md overflow-hidden"
         >
         <button onclick="applyCustomColor()" 
                 class="accent-bg text-white px-8 py-3.5 rounded-3xl font-semibold text-sm active:scale-95 transition w-full max-w-[240px]">
-          Apply This Color as Theme
+        Apply Theme
         </button>
-        <p class="text-xs text-slate-500 text-center">
-          Choose any color you love.<br>The app will create a beautiful gradient automatically.
-        </p>
       </div>
     </div>
 
-   <!-- Storage Section -->
-<div class="mb-10 bg-slate-50 rounded-3xl p-6">
-  <div class="flex items-center gap-3 mb-5">
-    <i class="fas fa-database text-xl accent-color"></i>
-    <h3 class="text-lg font-semibold text-slate-700">Storage</h3>
-  </div>
-  
-  <div class="bg-white rounded-2xl p-5 mb-6">
-    <div class="flex justify-between items-center mb-3">
-      <span class="text-sm text-slate-600">Used Storage</span>
-      <span id="storage-used" class="font-medium text-slate-700">0 KB</span>
+  <!-- Storage Card (Clickable) - New -->
+<div onclick="showStorageModal()" 
+     class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
+  <div class="flex items-center gap-4">
+    <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+      <i class="fas fa-database"></i>
     </div>
-    <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-      <div id="storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
+    <div>
+      <h4 class="font-semibold text-lg">Storage &amp; Data</h4>
+      <p class="text-sm text-slate-500">Manage storage, clean old data &amp; reset app</p>
     </div>
-    <p id="storage-detail" class="text-xs text-slate-500 mt-3 text-center">
-      Local storage used by your tasks and habits
-    </p>
   </div>
+  <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
+</div>
 
-  <!-- Clean Old Data -->
-  <div class="mb-6">
-    <h4 class="font-medium text-slate-700 mb-3">Clean Old Data</h4>
-    <p class="text-xs text-slate-500 mb-4">Keep recent data and delete everything older</p>
-    
-    <div class="grid grid-cols-2 gap-3 mb-4">
-      <button onclick="cleanOldData(30)"  class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 1 Month</button>
-      <button onclick="cleanOldData(90)"  class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 3 Months</button>
-      <button onclick="cleanOldData(180)" class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 6 Months</button>
-      <button onclick="cleanOldData(365)" class="py-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium">Keep Last 1 Year</button>
+<!-- Add this just before the "About Daily Flow" card -->
+<div onclick="showExportModal()" 
+     class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
+  <div class="flex items-center gap-4">
+    <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+      <i class="fas fa-file-export"></i>
+    </div>
+    <div>
+      <h4 class="font-semibold text-lg">Export to PDF</h4>
+      <p class="text-sm text-slate-500">Export your tasks and progress for any period</p>
     </div>
   </div>
-
-  <!-- Full Reset -->
-  <button onclick="resetAllData()" 
-          class="w-full py-4 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-3xl transition flex items-center justify-center gap-2">
-    <i class="fas fa-trash"></i>
-    Clear ALL Data & Reset App
-  </button>
+  <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
 </div>
 
     <!-- About Button -->
@@ -697,8 +685,7 @@
         </button>
       </div>
     </div>
-
-    <!-- About Modal (Scrollable Popup) -->
+<!-- About Modal (Scrollable Popup) - UPDATED & ENHANCED -->
 <div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
   <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
     
@@ -711,24 +698,55 @@
         <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
       </div>
       <button onclick="hideAboutModal()" 
-              class="w-9 h-9 flex items-center justify-center text-2xl text-slate-400 hover:text-slate-600 transition">
+              class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
         ×
       </button>
     </div>
 
     <!-- Scrollable Content -->
     <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
-      
+
+      <!-- Hero -->
       <div class="text-center">
         <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
-        <p class="text-slate-500 mt-1">Version 1.4 • Built for better days</p>
+        <p class="text-slate-500 mt-1">Version 1.5 • Built for better days</p>
       </div>
 
       <div>
         <p class="text-slate-600 leading-relaxed text-[15.5px]">
-          Daily Flow is a clean and simple daily planner that helps you build consistent habits, 
-          manage your tasks, and track your progress every day with joy and intention.
+          Daily Flow is a beautiful, simple, and powerful daily planner that helps you build lasting habits, 
+          stay organized, and celebrate every productive day with joy and intention.
         </p>
+      </div>
+
+      <!-- What's New (New Section) -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-rocket"></i> What's New in 1.5
+        </h3>
+        <div class="space-y-4 bg-slate-50 rounded-3xl p-5">
+          <div class="flex gap-3">
+            <div class="text-2xl">📄</div>
+            <div>
+              <h4 class="font-semibold">Export to PDF</h4>
+              <p class="text-sm text-slate-600">Export your full history with tasks, completion status, and calendar marks for any date range</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="text-2xl">🎨</div>
+            <div>
+              <h4 class="font-semibold">Custom Color Themes</h4>
+              <p class="text-sm text-slate-600">Choose any color you love with automatic gradient support</p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="text-2xl">💾</div>
+            <div>
+              <h4 class="font-semibold">Storage Management</h4>
+              <p class="text-sm text-slate-600">Clean old data, reset app, and see storage usage</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Key Features -->
@@ -736,33 +754,47 @@
         <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
           <i class="fas fa-star"></i> Key Features
         </h3>
-        <div class="space-y-4">
-          <div class="flex gap-4">
-            <div class="text-3xl accent-color mt-1">🔄</div>
-            <div class="flex-1">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">🔄</div>
+            <div>
               <h4 class="font-semibold">Recurring Habits</h4>
-              <p class="text-sm text-slate-600">Repeat daily or on specific weekdays</p>
+              <p class="text-sm text-slate-600">Daily or weekly repeats</p>
             </div>
           </div>
-          <div class="flex gap-4">
-            <div class="text-3xl accent-color mt-1">📅</div>
-            <div class="flex-1">
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📅</div>
+            <div>
               <h4 class="font-semibold">One-time Tasks</h4>
-              <p class="text-sm text-slate-600">Tasks for specific days with optional time</p>
+              <p class="text-sm text-slate-600">With time &amp; reminders</p>
             </div>
           </div>
-          <div class="flex gap-4">
-            <div class="text-3xl accent-color mt-1">🎨</div>
-            <div class="flex-1">
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">🎨</div>
+            <div>
               <h4 class="font-semibold">Beautiful Calendar</h4>
-              <p class="text-sm text-slate-600">Mark days green/red to track consistency</p>
+              <p class="text-sm text-slate-600">Mark days green/red</p>
             </div>
           </div>
-          <div class="flex gap-4">
-            <div class="text-3xl accent-color mt-1">📊</div>
-            <div class="flex-1">
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📊</div>
+            <div>
               <h4 class="font-semibold">Progress Tracking</h4>
-              <p class="text-sm text-slate-600">Live progress bar and monthly stats</p>
+              <p class="text-sm text-slate-600">Live bar + monthly stats</p>
+            </div>
+          </div>
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📤</div>
+            <div>
+              <h4 class="font-semibold">PDF Export</h4>
+              <p class="text-sm text-slate-600">Share your journey</p>
+            </div>
+          </div>
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">⚖️</div>
+            <div>
+              <h4 class="font-semibold">BMI Calculator</h4>
+              <p class="text-sm text-slate-600">Track your health</p>
             </div>
           </div>
         </div>
@@ -776,14 +808,18 @@
         <div class="space-y-6 text-[15px]">
           <div>
             <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
-            <p class="text-slate-600 mt-1">Type your task and tap the + button.<br>
+            <p class="text-slate-600 mt-1">Type your task → tap <strong>+</strong><br>
             Select weekdays = Recurring habit<br>
             No days selected = One-time task</p>
           </div>
           <div>
-            <h4 class="font-semibold text-slate-700">Calendar</h4>
-            <p class="text-slate-600 mt-1">Tap any day to mark it Green (good day) or Red.<br>
-            You can also add tasks directly from calendar view.</p>
+            <h4 class="font-semibold text-slate-700">Calendar View</h4>
+            <p class="text-slate-600 mt-1">Tap any day to mark Green (success) or Red.<br>
+            Add tasks directly from calendar.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-slate-700">Export Your Progress</h4>
+            <p class="text-slate-600 mt-1">Go to Settings → Export to PDF and choose any date range.</p>
           </div>
         </div>
       </div>
@@ -794,20 +830,138 @@
           <i class="fas fa-lightbulb"></i> Pro Tips
         </h3>
         <ul class="text-sm text-amber-700 space-y-2.5">
-          <li>• Tap on task text to edit it</li>
-          <li>• Drag & drop tasks to reorder</li>
-          <li>• Tap the time below a task to set reminder</li>
-          <li>• Use floating button to jump back to Today</li>
-          <li>• Mark calendar days consistently to build streaks</li>
+          <li>• Tap task text to edit instantly</li>
+          <li>• Drag &amp; drop to reorder tasks</li>
+          <li>• Tap time below task to set reminder</li>
+          <li>• Use floating home button to jump to Today</li>
+          <li>• Mark days consistently to build long streaks</li>
+          <li>• Export PDF to share your progress with friends or coach</li>
         </ul>
+      </div>
+
+      <!-- Coming Soon Teaser -->
+      <div class="bg-violet-50 border border-violet-200 rounded-3xl p-6 text-center">
+        <h3 class="font-semibold text-violet-700 mb-2">Coming Soon</h3>
+        <p class="text-violet-600 text-sm">Dark mode • Notifications • Cloud backup • Weekly reports</p>
       </div>
 
     </div>
 
     <!-- Footer -->
     <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
-      Thank you for using Daily Flow ✨<br>
+      Thank you for using <span class="accent-color font-medium">Daily Flow</span> ✨<br>
       One day at a time.
+    </div>
+  </div>
+</div>
+
+<!-- Export PDF Modal -->
+<div id="export-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+    
+    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+      <h2 class="text-xl font-semibold accent-color flex items-center gap-2">
+        <i class="fas fa-file-export"></i> Export to PDF
+      </h2>
+      <button onclick="hideExportModal()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
+    </div>
+
+    <div class="p-6 space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-2">Start Date</label>
+        <input type="date" id="export-start-date" 
+               class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-2">End Date</label>
+        <input type="date" id="export-end-date" 
+               class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
+        <i class="fas fa-info-circle"></i> 
+        The PDF will include habits, tasks, and daily progress between selected dates.
+      </div>
+
+      <button onclick="exportToPDF()" 
+              class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg active:scale-95 transition flex items-center justify-center gap-2">
+        <i class="fas fa-download"></i>
+        Generate & Download PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Storage Modal -->
+<div id="storage-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center text-white">
+          <i class="fas fa-database"></i>
+        </div>
+        <h2 class="text-xl font-semibold text-slate-700">Storage &amp; Data</h2>
+      </div>
+      <button onclick="hideStorageModal()" 
+              class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
+        ×
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-8">
+
+      <!-- Used Storage -->
+      <div class="bg-white rounded-3xl border border-slate-100 p-6">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-sm font-medium text-slate-600">Used Storage</span>
+          <span id="modal-storage-used" class="font-semibold text-slate-700">0 KB</span>
+        </div>
+        <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div id="modal-storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
+        </div>
+        <p id="modal-storage-detail" class="text-xs text-slate-500 mt-4 text-center">
+          Local storage used by your tasks and habits
+        </p>
+      </div>
+
+      <!-- Clean Old Data -->
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Clean Old Data</h4>
+        <p class="text-xs text-slate-500 mb-5">Keep recent data and permanently delete everything older</p>
+        
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="cleanOldData(30);hideStorageModal()" 
+                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+            Keep Last 1 Month
+          </button>
+          <button onclick="cleanOldData(90);hideStorageModal()" 
+                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+            Keep Last 3 Months
+          </button>
+          <button onclick="cleanOldData(180);hideStorageModal()" 
+                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+            Keep Last 6 Months
+          </button>
+          <button onclick="cleanOldData(365);hideStorageModal()" 
+                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+            Keep Last 1 Year
+          </button>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="pt-4 border-t border-slate-200">
+        <button onclick="if(confirm('⚠️ This will delete ALL your data permanently.\n\nAre you absolutely sure?')) { resetAllData(); hideStorageModal(); }" 
+                class="w-full py-5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-3xl transition flex items-center justify-center gap-3">
+          <i class="fas fa-trash"></i>
+          Clear ALL Data &amp; Reset App
+        </button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -922,28 +1076,27 @@ function renderDefaultThemes() {
   const container = document.getElementById("default-themes");
   container.innerHTML = `
     <div onclick="setDefaultTheme('orange')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'orange' ? 'border-orange-500 scale-105' : 'border-transparent hover:border-orange-300'}">
-      <div class="h-28 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
-        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      <div class="h-16 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+        <span class="text-white text-xl font-bold tracking-tighter">DF</span>
       </div>
       <div class="p-3 text-center font-medium text-sm">Orange</div>
     </div>
 
     <div onclick="setDefaultTheme('green')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'green' ? 'border-emerald-500 scale-105' : 'border-transparent hover:border-emerald-300'}">
-      <div class="h-28 bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      <div class="h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+        <span class="text-white text-xl font-bold tracking-tighter">DF</span>
       </div>
       <div class="p-3 text-center font-medium text-sm">Green</div>
     </div>
 
     <div onclick="setDefaultTheme('violet')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'violet' ? 'border-violet-500 scale-105' : 'border-transparent hover:border-violet-300'}">
-      <div class="h-28 bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-600 flex items-center justify-center">
-        <span class="text-white text-3xl font-bold tracking-tighter">DF</span>
+      <div class="h-16 bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-600 flex items-center justify-center">
+        <span class="text-white text-xl font-bold tracking-tighter">DF</span>
       </div>
       <div class="p-3 text-center font-medium text-sm">Violet</div>
     </div>
   `;
 }
-
 function setDefaultTheme(theme) {
   currentTheme = theme;
   applyTheme();
@@ -1049,6 +1202,72 @@ function toggleTheme() {
         });
       }
 
+      // Show Storage Modal
+function showStorageModal() {
+  const modal = document.getElementById("storage-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  
+  // Update storage info inside modal
+  updateStorageInfo();
+}
+
+// Hide Storage Modal
+function hideStorageModal() {
+  const modal = document.getElementById("storage-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+      // Show/Hide Export Modal
+function showExportModal() {
+  const modal = document.getElementById("export-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+
+  // Set default dates: last 30 days
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - 30);
+
+  document.getElementById("export-start-date").value = start.toISOString().split("T")[0];
+  document.getElementById("export-end-date").value = end.toISOString().split("T")[0];
+}
+
+function hideExportModal() {
+  const modal = document.getElementById("export-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+// Main Export Function
+async function exportToPDF() {
+  const startDate = document.getElementById("export-start-date").value;
+  const endDate = document.getElementById("export-end-date").value;
+
+  if (!startDate || !endDate) {
+    alert("Please select both start and end dates");
+    return;
+  }
+
+  if (startDate > endDate) {
+    alert("Start date cannot be after end date");
+    return;
+  }
+
+  hideExportModal();
+
+  // Show loading
+  const loadingAlert = alert("Generating PDF... This may take a few seconds.");
+
+  try {
+    // We'll use jsPDF + html2canvas (need to include libraries)
+    await generatePDF(startDate, endDate);
+  } catch (e) {
+    console.error(e);
+    alert("Failed to generate PDF. Please try again.");
+  }
+}
 
       // Reset all app data
 function resetAllData() {
@@ -1422,6 +1641,219 @@ function updateStorageInfo() {
         taskList.appendChild(ul);
         container.appendChild(taskList);
       }
+
+      async function generatePDF(startDate, endDate) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const days = [];
+  let current = new Date(start);
+  while (current <= end) {
+    days.push(current.toISOString().split("T")[0]);
+    current.setDate(current.getDate() + 1);
+  }
+
+  let y = 18;
+  let pageNum = 1;
+
+  // COLORS
+  const primary = [249, 115, 22]; // orange
+  const dark = [30, 30, 30];
+  const gray = [120, 120, 120];
+
+  // ================= HEADER =================
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(30);
+  doc.setTextColor(...primary);
+  doc.text("Daily Flow", 20, y);
+  doc.setFontSize(11);
+  doc.setTextColor(...gray);
+  doc.text(`Period: ${startDate} — ${endDate}`, 20, y + 8);
+
+  // top divider
+  doc.setDrawColor(...primary);
+  doc.setLineWidth(1.2);
+  doc.line(20, y + 12, 190, y + 12);
+  y += 22;
+
+  // ================= SUMMARY CARD =================
+  let totalTasks = 0, completedTasks = 0, greenDays = 0, perfectDays = 0;
+  days.forEach(dateKey => {
+    const prog = calculateProgress(dateKey);
+    totalTasks += prog.total;
+    completedTasks += prog.completed;
+    if (calendarMarks[dateKey] === "green") greenDays++;
+    if (prog.total > 0 && prog.percentage === 100) perfectDays++;
+  });
+
+  const overallRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 100;
+
+  // Card background
+  doc.setFillColor(255, 248, 243);
+  doc.roundedRect(18, y - 6, 174, 42, 4, 4, "F");
+
+  doc.setFont("times", "bold");
+  doc.setFontSize(15);
+  doc.setTextColor(...dark);
+  doc.text("Summary", 22, y);
+
+  doc.setFont("times", "normal");
+  doc.setFontSize(11);
+  y += 9;
+  doc.text(`Total Days          : ${days.length}`, 25, y);     y += 6;
+  doc.text(`Green Days          : ${greenDays}`, 25, y);       y += 6;
+  doc.text(`Perfect Days        : ${perfectDays}`, 25, y);     y += 6;
+  doc.text(`Overall Completion  : ${overallRate}%`, 25, y);
+  y += 20;
+
+  // ================= HIGHLIGHTS =================
+  doc.setFillColor(245, 245, 245);
+  doc.roundedRect(18, y - 6, 174, 32, 4, 4, "F");
+
+  doc.setFont("times", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(...dark);
+  doc.text("Highlights", 22, y);
+
+  doc.setFont("times", "normal");
+  doc.setFontSize(10.5);
+  y += 9;
+  doc.text(`• Average completion : ${overallRate}%`, 25, y); y += 6;
+  doc.text(`• Most consistent    : ${recurringTasks.length > 0 ? recurringTasks[0].text : "None"}`, 25, y); y += 6;
+  doc.text(`• Tasks completed    : ${completedTasks}/${totalTasks}`, 25, y);
+  y += 18;
+
+  // ================= HABITS =================
+  if (recurringTasks.length > 0) {
+    doc.setFont("times", "bold");
+    doc.setFontSize(15);
+    doc.setTextColor(...dark);
+    doc.text("Your Habits", 20, y);
+    y += 9;
+
+    doc.setFont("times", "normal");
+    doc.setFontSize(10.8);
+    recurringTasks.forEach(task => {
+      if (y > 272) { doc.addPage(); y = 20; pageNum++; }
+      doc.setFillColor(250, 250, 250);
+      doc.roundedRect(22, y - 4, 165, 9, 2, 2, "F");
+      doc.text(`• ${task.text}`, 27, y);
+      y += 8;
+    });
+    y += 12;
+  }
+
+  // ================= DAILY PROGRESS TABLE =================
+  doc.setFont("times", "bold");
+  doc.setFontSize(15);
+  doc.setTextColor(...dark);
+  doc.text("Daily Progress", 20, y);
+  y += 11;
+
+  const colDate = 25;
+  const colStatus = 85;
+  const colCompleted = 130;
+  const colPercent = 172;
+
+  // Table Header
+  doc.setFillColor(...primary);
+  doc.roundedRect(20, y - 6, 170, 11, 2, 2, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(10.5);
+  doc.text("Date", colDate, y);
+  doc.text("Status", colStatus, y);
+  doc.text("Done", colCompleted, y);
+  doc.text("%", colPercent, y);
+  y += 9;
+
+  const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  days.forEach(dateKey => {
+    if (y > 275) {
+      doc.addPage();
+      y = 22;
+      pageNum++;
+    }
+
+    const prog = calculateProgress(dateKey);
+    const mark = calendarMarks[dateKey];
+    let statusText = "NONE";
+    let statusColor = gray;
+
+    if (mark === "green") { statusText = "GREEN"; statusColor = [16,185,129]; }
+    else if (mark === "red") { statusText = "RED"; statusColor = [239,68,68]; }
+
+    const displayPercent = prog.total > 0 ? prog.percentage : 100;
+    const d = new Date(dateKey);
+    const cleanDate = `${weekdays[d.getDay()]}, ${dateKey.slice(8,10)} ${months[d.getMonth()]}`;
+
+    // Row background
+    doc.setFillColor(250, 250, 250);
+    doc.roundedRect(20, y - 5, 170, 9, 2, 2, "F");
+
+    doc.setFont("times", "normal");
+    doc.setFontSize(10.2);
+    doc.setTextColor(...dark);
+    doc.text(cleanDate, colDate, y);
+
+    doc.setTextColor(...statusColor);
+    doc.text(statusText, colStatus, y);
+
+    doc.setTextColor(...dark);
+    doc.text(`${prog.completed}/${prog.total}`, colCompleted, y);
+    doc.text(`${displayPercent}%`, colPercent, y);
+
+    y += 8;
+
+    // ================= TASKS (NOW PERFECTLY CLEAR) =================
+    const dayOfWeek = d.getDay();
+    const visibleRecurring = recurringTasks.filter(t =>
+      (!t.repeatDays || t.repeatDays.includes(dayOfWeek)) &&
+      (!t.createdDate || t.createdDate <= dateKey)
+    );
+
+    const oneTimeForDay = oneTimeTasks[dateKey] || [];
+    const allTasksForDay = [];
+
+    visibleRecurring.forEach(t => 
+      allTasksForDay.push({ text: t.text, done: recurringCompletions[dateKey]?.[t.id] || false })
+    );
+    oneTimeForDay.forEach(t => 
+      allTasksForDay.push({ text: t.text, done: t.completed })
+    );
+
+    doc.setFont("times", "normal");
+    doc.setFontSize(9.5);
+
+    allTasksForDay.forEach(task => {
+      if (y > 275) { doc.addPage(); y = 22; pageNum++; }
+      const mark = task.done ? "[v]" : "[x]";
+      const color = task.done ? [16,185,129] : [100,100,100];
+      doc.setTextColor(...color);
+      doc.text(`   ${mark} ${task.text}`, 28, y);
+      y += 5.8;
+    });
+
+    y += 6;
+  });
+
+  // ================= FOOTER =================
+  doc.setFont("times", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(150,150,150);
+  doc.line(20, 285, 190, 285);
+  doc.text(
+    `Generated on ${new Date().toLocaleDateString("en-IN")}   •   Page ${pageNum}`,
+    20,
+    290
+  );
+
+  doc.save(`DailyFlow_${startDate}_to_${endDate}.pdf`);
+  alert("✨ Premium & Clean PDF Generated Successfully!");
+}
 
       function renderAll() {
         renderRecurringTasks();
