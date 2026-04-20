@@ -1,673 +1,600 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Daily Flow</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    />
-   <style>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-  body {
-    font-family: "Inter", system-ui, sans-serif;
-    transition: background 0.4s ease;
-  }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Daily Flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-  .app-container {
-    max-width: 440px;
-    margin: 0 auto;
-    background: white;
-    min-height: 100vh;
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
-  }
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      transition: background 0.4s ease;
+    }
 
-  /* ==================== THEMES ==================== */
-  .theme-orange .accent-color {
-    color: #f97316;
-  }
-  .theme-orange .accent-bg {
-    background: linear-gradient(135deg, #f97316, #ea580c, #1f2937);
-  }
-  .theme-orange .header-gradient {
-    background: linear-gradient(
-      135deg,
-      #f97316 0%,
-      #ea580c 50%,
-      #1f2937 100%
-    );
-  }
+    .app-container {
+      max-width: 440px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
 
-  .theme-green .accent-color {
-    color: #10b981;
-  }
-  .theme-green .accent-bg {
-    background: linear-gradient(135deg, #10b981, #059669, #1f2937);
-  }
-  .theme-green .header-gradient {
-    background: linear-gradient(
-      135deg,
-      #10b981 0%,
-      #059669 50%,
-      #1f2937 100%
-    );
-  }
+    /* ==================== THEMES ==================== */
+    .theme-orange .accent-color {
+      color: #f97316;
+    }
 
-  /* Violet / Purple Theme - New */
-  .theme-violet .accent-color {
-    color: #8b5cf6;
-  }
-  .theme-violet .accent-bg {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
-  }
-  .theme-violet .header-gradient {
-    background: linear-gradient(
-      135deg,
-      #8b5cf6 0%,
-      #7c3aed 45%,
-      #6d28d9 100%
-    );
-  }
+    .theme-orange .accent-bg {
+      background: linear-gradient(135deg, #f97316, #ea580c, #1f2937);
+    }
 
-  /* Design Improvements */
-  .today-card {
-    padding: 20px !important;
-    border-radius: 20px;
-  }
-  #task-input {
-    padding: 16px 20px !important;
-    font-size: 16px;
-  }
-  .add-btn {
-    width: 60px !important;
-    height: 60px !important;
-    font-size: 28px;
-  }
-  .task-item {
-    padding: 16px 18px !important;
-    font-size: 15.8px;
-    border-radius: 20px;
-  }
-  .header-gradient {
-    padding: 16px 20px 22px;
-  }
+    .theme-orange .header-gradient {
+      background: linear-gradient(135deg,
+          #f97316 0%,
+          #ea580c 50%,
+          #1f2937 100%);
+    }
 
-  .about-card {
-    padding: 20px;
-    border-radius: 20px;
-  }
-  .feature-item {
-    padding: 16px;
-    background: #f8fafc;
-    border-radius: 16px;
-  }
+    .theme-green .accent-color {
+      color: #10b981;
+    }
 
-  /* Completed Task - Better Strikethrough */
-  .task-item.completed {
-    opacity: 0.85;
-    position: relative;
-  }
+    .theme-green .accent-bg {
+      background: linear-gradient(135deg, #10b981, #059669, #1f2937);
+    }
 
-  .task-item.completed span {
-    text-decoration: line-through;
-    text-decoration-thickness: 1px;
-    text-decoration-color: #64748b;
-    color: #64748b;
-    font-weight: 500;
-  }
+    .theme-green .header-gradient {
+      background: linear-gradient(135deg,
+          #10b981 0%,
+          #059669 50%,
+          #1f2937 100%);
+    }
 
-  /* Calendar Styles */
-  .calendar-day {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .calendar-day.green {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    color: white;
-    font-weight: 700;
-  }
-  .calendar-day.red {
-    background: linear-gradient(135deg, #ef4444, #f87171);
-    color: white;
-    font-weight: 700;
-  }
-  .calendar-day.future {
-    opacity: 0.65;
-    background: #f1f5f9;
-  }
-  .calendar-day.today {
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.6);
-  }
-  .calendar-day.selected {
-    transform: scale(1.12);
-    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.6);
-  }
-  .calendar-day.has-tasks::after {
-    content: "";
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    width: 8px;
-    height: 8px;
-    background: #fbbf24;
-    border-radius: 50%;
-  }
-  .weekdays {
-    background: #1e2937;
-    color: white;
-    border-radius: 16px;
-    padding: 8px 0;
-  }
+    /* Violet / Purple Theme - New */
+    .theme-violet .accent-color {
+      color: #8b5cf6;
+    }
 
-  .calendar-nav-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 26px;
-  }
+    .theme-violet .accent-bg {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
+    }
 
-  .mark-btn,
-  .open-tasks-btn {
-    padding: 14px 20px;
-    font-size: 15.5px;
-    border-radius: 20px;
-  }
+    .theme-violet .header-gradient {
+      background: linear-gradient(135deg,
+          #8b5cf6 0%,
+          #7c3aed 45%,
+          #6d28d9 100%);
+    }
 
-  .bottom-nav {
-    padding: 14px 20px !important;
-  }
+    /* Design Improvements */
+    .today-card {
+      padding: 20px !important;
+      border-radius: 20px;
+    }
 
-  .p-6{
-    margin-top: 20px;
-  }
-  /* Custom User Theme */
-.theme-custom .accent-color {
-  color: var(--accent, #8b5cf6);
-}
-.theme-custom .accent-bg {
-  background: linear-gradient(135deg, 
-    var(--accent-start, #8b5cf6), 
-    var(--accent-mid, #7c3aed), 
-    var(--accent-end, #6d28d9));
-}
-.theme-custom .header-gradient {
-  background: linear-gradient(135deg, 
-    var(--accent-start, #8b5cf6) 0%, 
-    var(--accent-mid, #7c3aed) 50%, 
-    var(--accent-end, #6d28d9) 100%);
-}
-</style>
-  </head>
-  <body class="theme-orange min-h-screen pb-20">
-    <div class="app-container">
-      <!-- Header -->
-      <div class="header-gradient text-white">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <h1 class="text-2xl font-bold tracking-tighter">Daily Flow</h1>
-            <button
-              onclick="toggleTheme()"
-              class="text-2xl hover:scale-110 transition"
-            >
-              <i class="fas fa-palette"></i>
-            </button>
-          </div>
-          <div class="text-right">
-            <div id="day-name" class="text-2xl font-bold leading-none"></div>
-            <div id="current-time" class="text-xs opacity-90 mt-0.5"></div>
-          </div>
-        </div>
+    #task-input {
+      padding: 16px 20px !important;
+      font-size: 16px;
+    }
 
-        <div class="mt-6 flex items-center justify-center gap-4">
-          <button
-            onclick="prevDay()"
-            class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95"
-          >
-            ←
-          </button>
-          <div
-            onclick="openDatePicker()"
-            id="selected-date-display"
-            class="text-base font-semibold px-6 py-3 rounded-3xl hover:bg-white/20 transition cursor-pointer"
-          ></div>
-          <button
-            onclick="nextDay()"
-            class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95"
-          >
-            →
+    .add-btn {
+      width: 60px !important;
+      height: 60px !important;
+      font-size: 28px;
+    }
+
+    .task-item {
+      padding: 16px 18px !important;
+      font-size: 15.8px;
+      border-radius: 20px;
+    }
+
+    .header-gradient {
+      padding: 16px 20px 22px;
+    }
+
+    .about-card {
+      padding: 20px;
+      border-radius: 20px;
+    }
+
+    .feature-item {
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 16px;
+    }
+
+    /* Completed Task - Better Strikethrough */
+    .task-item.completed {
+      opacity: 0.85;
+      position: relative;
+    }
+
+    .task-item.completed span {
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+      text-decoration-color: #64748b;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Calendar Styles */
+    .calendar-day {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .calendar-day.green {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: white;
+      font-weight: 700;
+    }
+
+    .calendar-day.red {
+      background: linear-gradient(135deg, #ef4444, #f87171);
+      color: white;
+      font-weight: 700;
+    }
+
+    .calendar-day.future {
+      opacity: 0.65;
+      background: #f1f5f9;
+    }
+
+    .calendar-day.today {
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.6);
+    }
+
+    .calendar-day.selected {
+      transform: scale(1.12);
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.6);
+    }
+
+    .calendar-day.has-tasks::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: #fbbf24;
+      border-radius: 50%;
+    }
+
+    .weekdays {
+      background: #1e2937;
+      color: white;
+      border-radius: 16px;
+      padding: 8px 0;
+    }
+
+    .calendar-nav-btn {
+      width: 50px;
+      height: 50px;
+      font-size: 26px;
+    }
+
+    .mark-btn,
+    .open-tasks-btn {
+      padding: 14px 20px;
+      font-size: 15.5px;
+      border-radius: 20px;
+    }
+
+    .bottom-nav {
+      padding: 14px 20px !important;
+    }
+
+    .p-6 {
+      margin-top: 20px;
+    }
+
+    /* Custom User Theme */
+    .theme-custom .accent-color {
+      color: var(--accent, #8b5cf6);
+    }
+
+    .theme-custom .accent-bg {
+      background: linear-gradient(135deg,
+          var(--accent-start, #8b5cf6),
+          var(--accent-mid, #7c3aed),
+          var(--accent-end, #6d28d9));
+    }
+
+    .theme-custom .header-gradient {
+      background: linear-gradient(135deg,
+          var(--accent-start, #8b5cf6) 0%,
+          var(--accent-mid, #7c3aed) 50%,
+          var(--accent-end, #6d28d9) 100%);
+    }
+  </style>
+</head>
+
+<body class="theme-orange min-h-screen pb-20">
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header-gradient text-white">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl font-bold tracking-tighter">Daily Flow</h1>
+          <button onclick="toggleTheme()" class="text-2xl hover:scale-110 transition">
+            <i class="fas fa-palette"></i>
           </button>
         </div>
-
-        <div class="mt-8 px-2">
-          <div class="flex justify-between text-xs mb-2">
-            <span class="font-medium">Progress</span>
-            <span id="progress-text" class="font-semibold">0/0</span>
-          </div>
-          <div class="h-3 bg-white/30 rounded-full overflow-hidden">
-            <div
-              id="progress-bar"
-              class="h-full bg-white w-0 transition-all duration-700"
-            ></div>
-          </div>
+        <div class="text-right">
+          <div id="day-name" class="text-2xl font-bold leading-none"></div>
+          <div id="current-time" class="text-xs opacity-90 mt-0.5"></div>
         </div>
       </div>
 
-      <div class="px-5 -mt-6 relative z-10">
-        <!-- Today View -->
-        <div id="view-today">
-          <div
-            class="today-card bg-white rounded-3xl shadow-2xl p-6 mb-8 border border-slate-100"
-          >
-            <div class="flex gap-4 items-center">
-              <input
-                id="task-input"
-                type="text"
-                placeholder="What needs to be done?"
-                class="flex-1 bg-slate-50 border border-slate-200 focus:border-orange-400 rounded-3xl px-6 py-4 text-base outline-none"
-              />
-              <button
-                onclick="addTask()"
-                class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-lg"
-              >
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
-            <div class="mt-4 space-y-4">
-              <div class="flex gap-4 items-center">
-                <input
-                  type="time"
-                  id="task-time"
-                  class="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm flex-1"
-                />
-              </div>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <button onclick="prevDay()"
+          class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95">
+          ←
+        </button>
+        <div onclick="openDatePicker()" id="selected-date-display"
+          class="text-base font-semibold px-6 py-3 rounded-3xl hover:bg-white/20 transition cursor-pointer"></div>
+        <button onclick="nextDay()"
+          class="w-10 h-10 flex items-center justify-center text-3xl hover:bg-white/20 rounded-3xl transition active:scale-95">
+          →
+        </button>
+      </div>
 
-              <!-- Weekday Selector -->
-              <div class="text-sm">
-                <p class="text-slate-500 mb-3 font-medium">
-                  Repeat on these days:
-                </p>
-                <div id="weekday-selector" class="grid grid-cols-7 gap-2">
-                  <!-- Will be filled by JS -->
+      <div class="mt-8 px-2">
+        <div class="flex justify-between text-xs mb-2">
+          <span class="font-medium">Progress</span>
+          <span id="progress-text" class="font-semibold">0/0</span>
+        </div>
+        <div class="h-3 bg-white/30 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-white w-0 transition-all duration-700"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-5 -mt-6 relative z-10">
+      <!-- Today View -->
+      <div id="view-today">
+
+        <!-- Task Input Card -->
+        <div class="today-card bg-white rounded-3xl shadow-2xl p-6 mb-8 border border-slate-100">
+          <div class="flex gap-4 items-center">
+            <input id="task-input" type="text" placeholder="What needs to be done?"
+              class="flex-1 bg-slate-50 border border-slate-200 focus:border-orange-400 rounded-3xl px-6 py-4 text-base outline-none" />
+            <button onclick="addTask()"
+              class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-lg">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="mt-4 space-y-4">
+            <!-- Clickable Time Trigger -->
+            <div id="time-section-trigger" onclick="toggleTimeSection()"
+              class="bg-slate-50 border border-slate-200 hover:border-orange-300 rounded-3xl p-5 flex items-center justify-between cursor-pointer transition-all active:scale-[0.985]">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-clock text-slate-400 text-xl"></i>
+                <div>
+                  <p class="font-medium text-slate-700">Set time period</p>
+                  <p id="time-preview" class="text-xs text-slate-400">Optional • Start &amp; End time</p>
+                </div>
+              </div>
+              <i id="time-chevron" class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+            </div>
+
+            <!-- Hidden Time Inputs -->
+            <div id="time-inputs" class="hidden space-y-4 pt-2">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-[10px] text-slate-400 mb-1">START TIME</label>
+                  <input type="time" id="task-start-time"
+                    class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-base outline-none focus:border-orange-400">
+                </div>
+                <div>
+                  <label class="block text-[10px] text-slate-400 mb-1">END TIME <span
+                      class="text-emerald-600">(optional)</span></label>
+                  <input type="time" id="task-end-time"
+                    class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-base outline-none focus:border-orange-400">
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="mb-8">
-            <div class="flex justify-between items-center mb-4 px-1">
-              <h2
-                class="font-semibold text-lg flex items-center gap-2 accent-color"
-              >
-                <i class="fas fa-redo"></i> Daily Habits
-              </h2>
-              <button
-                onclick="resetRecurringCompletions()"
-                class="text-sm accent-color hover:underline"
-              >
-                Reset
-              </button>
-            </div>
-            <ul id="recurring-list" class="space-y-3"></ul>
-          </div>
-
-          <div>
-            <div class="flex justify-between items-center mb-4 px-1">
-              <h2
-                class="font-semibold text-lg flex items-center gap-2 accent-color"
-              >
-                <i class="fas fa-calendar-day"></i> Today's Tasks
-              </h2>
-              <button
-                id="clear-completed-btn"
-                onclick="clearCompletedOneTime()"
-                class="hidden text-sm accent-color hover:underline"
-              >
-                Clear done
-              </button>
-            </div>
-            <ul id="onetime-list" class="space-y-3"></ul>
-            <div id="no-tasks" class="hidden text-center py-20 text-slate-400">
-              <i class="fas fa-clipboard-list text-7xl mb-6 opacity-40"></i>
-              <p class="text-lg font-medium">No tasks yet</p>
+            <!-- Weekday Selector -->
+            <div class="text-sm">
+              <p class="text-slate-500 mb-3 font-medium">Repeat on these days:</p>
+              <div id="weekday-selector" class="grid grid-cols-7 gap-2"></div>
             </div>
           </div>
         </div>
 
-        <!-- Calendar View -->
-        <div id="view-calendar" class="hidden pt-4 pb-10">
-          <div
-            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
-          >
-            <div class="flex justify-between items-center mb-6">
-              <button
-                onclick="prevMonth()"
-                class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition"
-              >
-                ←
-              </button>
-              <h2
-                id="calendar-month-year"
-                class="text-xl font-semibold accent-color"
-              ></h2>
-              <button
-                onclick="nextMonth()"
-                class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition"
-              >
-                →
-              </button>
-            </div>
+        <!-- Daily Habits -->
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-4 px-1">
+            <h2 class="font-semibold text-lg flex items-center gap-2 accent-color">
+              <i class="fas fa-redo"></i> Daily Habits
+            </h2>
+            <button onclick="resetRecurringCompletions()" class="text-sm accent-color hover:underline">
+              Reset
+            </button>
+          </div>
+          <ul id="recurring-list" class="space-y-3"></ul>
+        </div>
 
-            <!-- Weekdays with black background -->
-            <div
-              class="weekdays grid grid-cols-7 text-center text-xs font-medium py-3 mb-4 rounded-2xl"
-            >
-              <div>S</div>
-              <div>M</div>
-              <div>T</div>
-              <div>W</div>
-              <div>T</div>
-              <div>F</div>
-              <div>S</div>
-            </div>
+        <!-- Today's Tasks -->
+        <div>
+          <div class="flex justify-between items-center mb-4 px-1">
+            <h2 class="font-semibold text-lg flex items-center gap-2 accent-color">
+              <i class="fas fa-calendar-day"></i> Today's Tasks
+            </h2>
+            <button id="clear-completed-btn" onclick="clearCompletedOneTime()"
+              class="hidden text-sm accent-color hover:underline">
+              Clear done
+            </button>
+          </div>
+          <ul id="onetime-list" class="space-y-3"></ul>
+          <div id="no-tasks" class="hidden text-center py-20 text-slate-400">
+            <i class="fas fa-clipboard-list text-7xl mb-6 opacity-40"></i>
+            <p class="text-lg font-medium">No tasks yet</p>
+          </div>
+        </div>
 
-            <div id="calendar-grid" class="grid grid-cols-7 gap-3"></div>
+      </div>
+      <!-- Calendar View -->
+      <div id="view-calendar" class="hidden pt-4 pb-10">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
+          <div class="flex justify-between items-center mb-6">
+            <button onclick="prevMonth()"
+              class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition">
+              ←
+            </button>
+            <h2 id="calendar-month-year" class="text-xl font-semibold accent-color"></h2>
+            <button onclick="nextMonth()"
+              class="calendar-nav-btn flex items-center justify-center hover:bg-slate-100 rounded-3xl transition">
+              →
+            </button>
+          </div>
 
-            <div id="selected-day-panel" class="mt-8 hidden">
-              <div class="flex justify-between items-center mb-4">
-                <h3 id="selected-day-title" class="font-semibold text-lg"></h3>
-                <div class="flex gap-3">
-                  <button
-                    id="mark-btn"
-                    onclick="cycleMark()"
-                    class="mark-btn accent-bg text-white flex items-center gap-2 transition"
-                  >
-                    <i class="fas fa-palette"></i> Mark
-                  </button>
-                  <button
-                    onclick="openDayTasks()"
-                    class="open-tasks-btn bg-slate-700 hover:bg-slate-800 text-white flex items-center gap-2 transition"
-                  >
-                    <i class="fas fa-tasks"></i> Open Tasks
-                  </button>
-                </div>
-              </div>
+          <!-- Weekdays with black background -->
+          <div class="weekdays grid grid-cols-7 text-center text-xs font-medium py-3 mb-4 rounded-2xl">
+            <div>S</div>
+            <div>M</div>
+            <div>T</div>
+            <div>W</div>
+            <div>T</div>
+            <div>F</div>
+            <div>S</div>
+          </div>
 
-              <div class="bg-slate-50 rounded-3xl p-5">
-                <input
-                  id="calendar-task-input"
-                  type="text"
-                  placeholder="Add task for this day..."
-                  class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 outline-none focus:border-orange-400"
-                />
-                <button
-                  onclick="addTaskFromCalendar()"
-                  class="mt-3 w-full accent-bg py-4 text-white font-semibold rounded-2xl"
-                >
-                  + Add Task
+          <div id="calendar-grid" class="grid grid-cols-7 gap-3"></div>
+
+          <div id="selected-day-panel" class="mt-8 hidden">
+            <div class="flex justify-between items-center mb-4">
+              <h3 id="selected-day-title" class="font-semibold text-lg"></h3>
+              <div class="flex gap-3">
+                <button id="mark-btn" onclick="cycleMark()"
+                  class="mark-btn accent-bg text-white flex items-center gap-2 transition">
+                  <i class="fas fa-palette"></i> Mark
+                </button>
+                <button onclick="openDayTasks()"
+                  class="open-tasks-btn bg-slate-700 hover:bg-slate-800 text-white flex items-center gap-2 transition">
+                  <i class="fas fa-tasks"></i> Open Tasks
                 </button>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Stats & BMI Views (kept as before) -->
-        <div id="view-stats" class="hidden pt-4 pb-10">
-          <div
-            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
-          >
-            <h2
-              class="font-semibold text-2xl accent-color flex items-center gap-3"
-            >
-              <i class="fas fa-chart-simple"></i> Monthly Overview
-            </h2>
-          </div>
-
-          <div
-            class="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100 mt-6 text-center"
-          >
-            <i class="fas fa-leaf text-emerald-500 text-5xl mb-4"></i>
-            <div id="green-days-count" class="text-6xl font-bold accent-color">
-              0
-            </div>
-            <div class="text-slate-500 mt-1 text-lg">Green Days</div>
-            <div class="mt-8 flex justify-center gap-12">
-              <div>
-                <div
-                  id="green-days-total"
-                  class="text-3xl font-semibold text-slate-700"
-                >
-                  0 / 0
-                </div>
-                <div class="text-xs text-slate-500 mt-1">THIS MONTH</div>
-              </div>
-              <div class="border-l border-slate-200"></div>
-              <div>
-                <div
-                  id="green-days-percentage"
-                  class="text-3xl font-semibold text-emerald-600"
-                >
-                  0%
-                </div>
-                <div class="text-xs text-slate-500 mt-1">EFFICIENCY</div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="mt-6 bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
-          >
-            <div class="flex items-center gap-2 mb-6">
-              <i class="fas fa-chart-bar text-emerald-500 text-xl"></i>
-              <h3 class="font-semibold text-lg">Last 7 Days</h3>
-            </div>
-            <div
-              id="last-7-container"
-              class="flex justify-between items-end h-52 gap-2"
-            ></div>
-          </div>
-        </div>
-
-        <div id="view-bmi" class="hidden pt-4 pb-10">
-          <div
-            class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100"
-          >
-            <h2
-              class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8"
-            >
-              <i class="fas fa-weight-scale"></i> BMI Calculator
-            </h2>
-            <div class="space-y-6">
-              <div>
-                <label class="block text-sm font-medium text-slate-600 mb-2"
-                  >Height (cm)</label
-                >
-                <input
-                  id="height"
-                  type="number"
-                  placeholder="170"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-600 mb-2"
-                  >Weight (kg)</label
-                >
-                <input
-                  id="weight"
-                  type="number"
-                  placeholder="65"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400"
-                />
-              </div>
-              <button
-                onclick="calculateBMI()"
-                class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg transition"
-              >
-                Calculate BMI
+            <div class="bg-slate-50 rounded-3xl p-5">
+              <input id="calendar-task-input" type="text" placeholder="Add task for this day..."
+                class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 outline-none focus:border-orange-400" />
+              <button onclick="addTaskFromCalendar()"
+                class="mt-3 w-full accent-bg py-4 text-white font-semibold rounded-2xl">
+                + Add Task
               </button>
-              <div
-                id="bmi-result"
-                class="hidden mt-6 p-8 rounded-3xl text-center border"
-              >
-                <div id="bmi-value" class="text-7xl font-bold mb-3"></div>
-                <div
-                  id="bmi-category"
-                  class="text-2xl font-semibold mb-4"
-                ></div>
-                <div id="bmi-advice" class="text-sm"></div>
-              </div>
             </div>
           </div>
         </div>
-<!-- ==================== SETTINGS VIEW ==================== -->
-<div id="view-settings" class="hidden pt-4 pb-10">
-  <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 mx-0">
-
-    <h2 class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8">
-      <i class="fas fa-cog"></i> Settings
-    </h2>
-
-    <!-- Default Themes -->
-    <div class="mb-10">
-      <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
-        <i class="fas fa-palette"></i> Default Themes
-      </h3>
-      <div class="grid grid-cols-3 gap-4" id="default-themes">
-        <!-- Populated by JS -->
       </div>
-    </div>
 
-    <!-- Popular Colors -->
-    <div class="mb-10">
-      <h3 class="text-lg font-semibold mb-4 text-slate-700">Popular Colors</h3>
-      <div id="color-palette" class="grid grid-cols-6 gap-3">
-        <!-- Populated by JS -->
+      <!-- Stats & BMI Views (kept as before) -->
+      <div id="view-stats" class="hidden pt-4 pb-10">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
+          <h2 class="font-semibold text-2xl accent-color flex items-center gap-3">
+            <i class="fas fa-chart-simple"></i> Monthly Overview
+          </h2>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-2xl p-8 border border-slate-100 mt-6 text-center">
+          <i class="fas fa-leaf text-emerald-500 text-5xl mb-4"></i>
+          <div id="green-days-count" class="text-6xl font-bold accent-color">
+            0
+          </div>
+          <div class="text-slate-500 mt-1 text-lg">Green Days</div>
+          <div class="mt-8 flex justify-center gap-12">
+            <div>
+              <div id="green-days-total" class="text-3xl font-semibold text-slate-700">
+                0 / 0
+              </div>
+              <div class="text-xs text-slate-500 mt-1">THIS MONTH</div>
+            </div>
+            <div class="border-l border-slate-200"></div>
+            <div>
+              <div id="green-days-percentage" class="text-3xl font-semibold text-emerald-600">
+                0%
+              </div>
+              <div class="text-xs text-slate-500 mt-1">EFFICIENCY</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
+          <div class="flex items-center gap-2 mb-6">
+            <i class="fas fa-chart-bar text-emerald-500 text-xl"></i>
+            <h3 class="font-semibold text-lg">Last 7 Days</h3>
+          </div>
+          <div id="last-7-container" class="flex justify-between items-end h-52 gap-2"></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Custom Color -->
-    <div class="mb-10">
-      <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
-        <i class="fas fa-paint-brush"></i> Custom Color Theme
-      </h3>
-      <div class="bg-slate-50 rounded-3xl p-6 flex flex-col items-center gap-5">
-        <input 
-          type="color" 
-          id="custom-color-picker"
-          value="#8b5cf6"
-          class="w-110 h-11 cursor-pointer border-4 border-white shadow-md overflow-hidden"
-        >
-        <button onclick="applyCustomColor()" 
+      <div id="view-bmi" class="hidden pt-4 pb-10">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100">
+          <h2 class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8">
+            <i class="fas fa-weight-scale"></i> BMI Calculator
+          </h2>
+          <div class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-2">Height (cm)</label>
+              <input id="height" type="number" placeholder="170"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-600 mb-2">Weight (kg)</label>
+              <input id="weight" type="number" placeholder="65"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-lg outline-none focus:border-orange-400" />
+            </div>
+            <button onclick="calculateBMI()"
+              class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg transition">
+              Calculate BMI
+            </button>
+            <div id="bmi-result" class="hidden mt-6 p-8 rounded-3xl text-center border">
+              <div id="bmi-value" class="text-7xl font-bold mb-3"></div>
+              <div id="bmi-category" class="text-2xl font-semibold mb-4"></div>
+              <div id="bmi-advice" class="text-sm"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ==================== SETTINGS VIEW ==================== -->
+      <div id="view-settings" class="hidden pt-4 pb-10">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 border border-slate-100 mx-0">
+
+          <h2 class="font-semibold text-2xl accent-color flex items-center gap-3 mb-8">
+            <i class="fas fa-cog"></i> Settings
+          </h2>
+
+          <!-- Default Themes -->
+          <div class="mb-10">
+            <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
+              <i class="fas fa-palette"></i> Default Themes
+            </h3>
+            <div class="grid grid-cols-3 gap-4" id="default-themes">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Popular Colors -->
+          <div class="mb-10">
+            <h3 class="text-lg font-semibold mb-4 text-slate-700">Popular Colors</h3>
+            <div id="color-palette" class="grid grid-cols-6 gap-3">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Custom Color -->
+          <div class="mb-10">
+            <h3 class="text-lg font-semibold mb-5 flex items-center gap-2 text-slate-700">
+              <i class="fas fa-paint-brush"></i> Custom Color Theme
+            </h3>
+            <div class="bg-slate-50 rounded-3xl p-6 flex flex-col items-center gap-5">
+              <input type="color" id="custom-color-picker" value="#8b5cf6"
+                class="w-110 h-11 cursor-pointer border-4 border-white shadow-md overflow-hidden">
+              <button onclick="applyCustomColor()"
                 class="accent-bg text-white px-8 py-3.5 rounded-3xl font-semibold text-sm active:scale-95 transition w-full max-w-[240px]">
-        Apply Theme
-        </button>
-      </div>
-    </div>
+                Apply Theme
+              </button>
+            </div>
+          </div>
 
-  <!-- Storage Card (Clickable) - New -->
-<div onclick="showStorageModal()" 
-     class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
-  <div class="flex items-center gap-4">
-    <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
-      <i class="fas fa-database"></i>
-    </div>
-    <div>
-      <h4 class="font-semibold text-lg">Storage &amp; Data</h4>
-      <p class="text-sm text-slate-500">Manage storage, clean old data &amp; reset app</p>
-    </div>
-  </div>
-  <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
-</div>
+          <!-- Storage Card (Clickable) - New -->
+          <div onclick="showStorageModal()"
+            class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
+            <div class="flex items-center gap-4">
+              <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+                <i class="fas fa-database"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">Storage &amp; Data</h4>
+                <p class="text-sm text-slate-500">Manage storage, clean old data &amp; reset app</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
+          </div>
 
-<!-- Add this just before the "About Daily Flow" card -->
-<div onclick="showExportModal()" 
-     class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
-  <div class="flex items-center gap-4">
-    <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
-      <i class="fas fa-file-export"></i>
-    </div>
-    <div>
-      <h4 class="font-semibold text-lg">Export to PDF</h4>
-      <p class="text-sm text-slate-500">Export your tasks and progress for any period</p>
-    </div>
-  </div>
-  <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
-</div>
+          <!-- Add this just before the "About Daily Flow" card -->
+          <div onclick="showExportModal()"
+            class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer mb-6">
+            <div class="flex items-center gap-4">
+              <div class="w-11 h-11 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+                <i class="fas fa-file-export"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">Export to PDF</h4>
+                <p class="text-sm text-slate-500">Export your tasks and progress for any period</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
+          </div>
 
-    <!-- About Button -->
-    <div onclick="showAboutModal()" 
-         class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer">
-      <div class="flex items-center gap-4">
-        <div class="w-11 h-11 accent-bg rounded-2xl flex items-center justify-center text-white text-2xl">
-          <i class="fas fa-info-circle"></i>
+          <!-- About Button -->
+          <div onclick="showAboutModal()"
+            class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 transition p-5 rounded-3xl cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-11 h-11 accent-bg rounded-2xl flex items-center justify-center text-white text-2xl">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">About Daily Flow</h4>
+                <p class="text-sm text-slate-500">App info, features & tips</p>
+              </div>
+            </div>
+            <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
+          </div>
+
         </div>
-        <div>
-          <h4 class="font-semibold text-lg">About Daily Flow</h4>
-          <p class="text-sm text-slate-500">App info, features & tips</p>
-        </div>
       </div>
-      <i class="fas fa-chevron-right text-slate-400 text-xl"></i>
-    </div>
-
-  </div>
-</div>
 
     </div>
 
     <!-- Floating "Go to Today" Button - Visible only in Today Tab -->
     <!-- Draggable Floating Button -->
-    <div
-      id="float-container"
-      class="fixed bottom-24 right-6 z-[9999] transition-all"
-    >
-      <button
-        id="float-btn"
-        onclick="goToToday()"
-        class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-xl w-14 h-14"
-      >
+    <div id="float-container" class="fixed bottom-24 right-6 z-[9999] transition-all">
+      <button id="float-btn" onclick="goToToday()"
+        class="add-btn accent-bg rounded-3xl flex items-center justify-center text-white active:scale-95 shadow-xl w-14 h-14">
         <i class="fas fa-home text-2xl"></i>
       </button>
     </div>
-<!-- Bottom Navigation -->
-<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 py-4 px-6 z-50">
-  <div class="flex justify-around">
-    <div onclick="switchTab(0)" id="nav-today" class="flex flex-col items-center cursor-pointer accent-color">
-      <i class="fas fa-home text-2xl"></i>
-      <span class="text-xs font-medium mt-1">Today</span>
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-200 py-4 px-6 z-50">
+      <div class="flex justify-around">
+        <div onclick="switchTab(0)" id="nav-today" class="flex flex-col items-center cursor-pointer accent-color">
+          <i class="fas fa-home text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Today</span>
+        </div>
+        <div onclick="switchTab(1)" id="nav-calendar" class="flex flex-col items-center cursor-pointer text-slate-400">
+          <i class="fas fa-calendar-alt text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Calendar</span>
+        </div>
+        <div onclick="switchTab(2)" id="nav-stats" class="flex flex-col items-center cursor-pointer text-slate-400">
+          <i class="fas fa-chart-simple text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Stats</span>
+        </div>
+        <div onclick="switchTab(3)" id="nav-bmi" class="flex flex-col items-center cursor-pointer text-slate-400">
+          <i class="fas fa-weight-scale text-2xl"></i>
+          <span class="text-xs font-medium mt-1">BMI</span>
+        </div>
+        <div onclick="switchTab(4)" id="nav-settings" class="flex flex-col items-center cursor-pointer text-slate-400">
+          <i class="fas fa-cog text-2xl"></i>
+          <span class="text-xs font-medium mt-1">Settings</span>
+        </div>
+      </div>
     </div>
-    <div onclick="switchTab(1)" id="nav-calendar" class="flex flex-col items-center cursor-pointer text-slate-400">
-      <i class="fas fa-calendar-alt text-2xl"></i>
-      <span class="text-xs font-medium mt-1">Calendar</span>
-    </div>
-    <div onclick="switchTab(2)" id="nav-stats" class="flex flex-col items-center cursor-pointer text-slate-400">
-      <i class="fas fa-chart-simple text-2xl"></i>
-      <span class="text-xs font-medium mt-1">Stats</span>
-    </div>
-    <div onclick="switchTab(3)" id="nav-bmi" class="flex flex-col items-center cursor-pointer text-slate-400">
-      <i class="fas fa-weight-scale text-2xl"></i>
-      <span class="text-xs font-medium mt-1">BMI</span>
-    </div>
-    <div onclick="switchTab(4)" id="nav-settings" class="flex flex-col items-center cursor-pointer text-slate-400">
-      <i class="fas fa-cog text-2xl"></i>
-      <span class="text-xs font-medium mt-1">Settings</span>
-    </div>
-  </div>
-</div>
 
     <input type="date" id="hidden-date-picker" class="hidden" />
 
     <!-- Weekday Repeat Info Modal (optional help) -->
-    <div
-      id="repeat-info"
-      class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000]"
-    >
+    <div id="repeat-info" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000]">
       <div class="bg-white rounded-3xl p-6 max-w-[300px] text-center">
         <h3 class="font-semibold mb-3">How Repeat Works</h3>
         <p class="text-slate-600 text-sm">
@@ -675,295 +602,295 @@
           • Select all days = Daily task<br />
           • Select some days = Repeats only on those days
         </p>
-        <button
-          onclick="
+        <button onclick="
             document.getElementById('repeat-info').classList.add('hidden')
-          "
-          class="mt-6 w-full py-3 accent-bg text-white rounded-2xl"
-        >
+          " class="mt-6 w-full py-3 accent-bg text-white rounded-2xl">
           OK
         </button>
       </div>
     </div>
-<!-- About Modal (Scrollable Popup) - UPDATED & ENHANCED -->
-<div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
-  <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-    
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 accent-bg rounded-2xl flex items-center justify-center text-white">
-          <i class="fas fa-water"></i>
+    <!-- About Modal (Scrollable Popup) - UPDATED & ENHANCED -->
+    <div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+      <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 accent-bg rounded-2xl flex items-center justify-center text-white">
+              <i class="fas fa-water"></i>
+            </div>
+            <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
+          </div>
+          <button onclick="hideAboutModal()"
+            class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
+            ×
+          </button>
         </div>
-        <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
-      </div>
-      <button onclick="hideAboutModal()" 
-              class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
-        ×
-      </button>
-    </div>
 
-    <!-- Scrollable Content -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
 
-      <!-- Hero -->
-      <div class="text-center">
-        <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
-        <p class="text-slate-500 mt-1">Version 1.5 • Built for better days</p>
-      </div>
+          <!-- Hero -->
+          <div class="text-center">
+            <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
+            <p class="text-slate-500 mt-1">Version 1.5 • Built for better days</p>
+          </div>
 
-      <div>
-        <p class="text-slate-600 leading-relaxed text-[15.5px]">
-          Daily Flow is a beautiful, simple, and powerful daily planner that helps you build lasting habits, 
-          stay organized, and celebrate every productive day with joy and intention.
-        </p>
-      </div>
-
-      <!-- What's New (New Section) -->
-      <div>
-        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-          <i class="fas fa-rocket"></i> What's New in 1.5
-        </h3>
-        <div class="space-y-4 bg-slate-50 rounded-3xl p-5">
-          <div class="flex gap-3">
-            <div class="text-2xl">📄</div>
-            <div>
-              <h4 class="font-semibold">Export to PDF</h4>
-              <p class="text-sm text-slate-600">Export your full history with tasks, completion status, and calendar marks for any date range</p>
-            </div>
-          </div>
-          <div class="flex gap-3">
-            <div class="text-2xl">🎨</div>
-            <div>
-              <h4 class="font-semibold">Custom Color Themes</h4>
-              <p class="text-sm text-slate-600">Choose any color you love with automatic gradient support</p>
-            </div>
-          </div>
-          <div class="flex gap-3">
-            <div class="text-2xl">💾</div>
-            <div>
-              <h4 class="font-semibold">Storage Management</h4>
-              <p class="text-sm text-slate-600">Clean old data, reset app, and see storage usage</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Key Features -->
-      <div>
-        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-          <i class="fas fa-star"></i> Key Features
-        </h3>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">🔄</div>
-            <div>
-              <h4 class="font-semibold">Recurring Habits</h4>
-              <p class="text-sm text-slate-600">Daily or weekly repeats</p>
-            </div>
-          </div>
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">📅</div>
-            <div>
-              <h4 class="font-semibold">One-time Tasks</h4>
-              <p class="text-sm text-slate-600">With time &amp; reminders</p>
-            </div>
-          </div>
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">🎨</div>
-            <div>
-              <h4 class="font-semibold">Beautiful Calendar</h4>
-              <p class="text-sm text-slate-600">Mark days green/red</p>
-            </div>
-          </div>
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">📊</div>
-            <div>
-              <h4 class="font-semibold">Progress Tracking</h4>
-              <p class="text-sm text-slate-600">Live bar + monthly stats</p>
-            </div>
-          </div>
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">📤</div>
-            <div>
-              <h4 class="font-semibold">PDF Export</h4>
-              <p class="text-sm text-slate-600">Share your journey</p>
-            </div>
-          </div>
-          <div class="feature-item flex gap-3 p-4 rounded-2xl">
-            <div class="text-3xl accent-color">⚖️</div>
-            <div>
-              <h4 class="font-semibold">BMI Calculator</h4>
-              <p class="text-sm text-slate-600">Track your health</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- How to Use -->
-      <div>
-        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-          <i class="fas fa-book"></i> How to Use
-        </h3>
-        <div class="space-y-6 text-[15px]">
           <div>
-            <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
-            <p class="text-slate-600 mt-1">Type your task → tap <strong>+</strong><br>
-            Select weekdays = Recurring habit<br>
-            No days selected = One-time task</p>
+            <p class="text-slate-600 leading-relaxed text-[15.5px]">
+              Daily Flow is a beautiful, simple, and powerful daily planner that helps you build lasting habits,
+              stay organized, and celebrate every productive day with joy and intention.
+            </p>
           </div>
+
+          <!-- What's New (New Section) -->
           <div>
-            <h4 class="font-semibold text-slate-700">Calendar View</h4>
-            <p class="text-slate-600 mt-1">Tap any day to mark Green (success) or Red.<br>
-            Add tasks directly from calendar.</p>
+            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+              <i class="fas fa-rocket"></i> What's New in 1.6
+            </h3>
+            <div class="space-y-4 bg-slate-50 rounded-3xl p-5">
+              <div class="flex gap-3">
+                <div class="text-2xl">📄</div>
+                <div>
+                  <h4 class="font-semibold">Export to PDF</h4>
+                  <p class="text-sm text-slate-600">Export your full history with tasks, completion status, and calendar
+                    marks for any date range</p>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="text-2xl">🎨</div>
+                <div>
+                  <h4 class="font-semibold">Custom Color Themes</h4>
+                  <p class="text-sm text-slate-600">Choose any color you love with automatic gradient support</p>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <div class="text-2xl">💾</div>
+                <div>
+                  <h4 class="font-semibold">Storage Management</h4>
+                  <p class="text-sm text-slate-600">Clean old data, reset app, and see storage usage</p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- Key Features -->
           <div>
-            <h4 class="font-semibold text-slate-700">Export Your Progress</h4>
-            <p class="text-slate-600 mt-1">Go to Settings → Export to PDF and choose any date range.</p>
+            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+              <i class="fas fa-star"></i> Key Features
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">🔄</div>
+                <div>
+                  <h4 class="font-semibold">Recurring Habits</h4>
+                  <p class="text-sm text-slate-600">Daily or weekly repeats</p>
+                </div>
+              </div>
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">📅</div>
+                <div>
+                  <h4 class="font-semibold">One-time Tasks</h4>
+                  <p class="text-sm text-slate-600">With time &amp; reminders</p>
+                </div>
+              </div>
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">🎨</div>
+                <div>
+                  <h4 class="font-semibold">Beautiful Calendar</h4>
+                  <p class="text-sm text-slate-600">Mark days green/red</p>
+                </div>
+              </div>
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">📊</div>
+                <div>
+                  <h4 class="font-semibold">Progress Tracking</h4>
+                  <p class="text-sm text-slate-600">Live bar + monthly stats</p>
+                </div>
+              </div>
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">📤</div>
+                <div>
+                  <h4 class="font-semibold">PDF Export</h4>
+                  <p class="text-sm text-slate-600">Share your journey</p>
+                </div>
+              </div>
+              <div class="feature-item flex gap-3 p-4 rounded-2xl">
+                <div class="text-3xl accent-color">⚖️</div>
+                <div>
+                  <h4 class="font-semibold">BMI Calculator</h4>
+                  <p class="text-sm text-slate-600">Track your health</p>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- How to Use -->
+          <div>
+            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+              <i class="fas fa-book"></i> How to Use
+            </h3>
+            <div class="space-y-6 text-[15px]">
+              <div>
+                <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
+                <p class="text-slate-600 mt-1">Type your task → tap <strong>+</strong><br>
+                  Select weekdays = Recurring habit<br>
+                  No days selected = One-time task</p>
+              </div>
+              <div>
+                <h4 class="font-semibold text-slate-700">Calendar View</h4>
+                <p class="text-slate-600 mt-1">Tap any day to mark Green (success) or Red.<br>
+                  Add tasks directly from calendar.</p>
+              </div>
+              <div>
+                <h4 class="font-semibold text-slate-700">Export Your Progress</h4>
+                <p class="text-slate-600 mt-1">Go to Settings → Export to PDF and choose any date range.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pro Tips -->
+          <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
+            <h3 class="font-semibold text-amber-700 mb-4 flex items-center gap-2">
+              <i class="fas fa-lightbulb"></i> Pro Tips
+            </h3>
+            <ul class="text-sm text-amber-700 space-y-2.5">
+              <li>• Tap task text to edit instantly</li>
+              <li>• Drag &amp; drop to reorder tasks</li>
+              <li>• Tap time below task to set reminder</li>
+              <li>• Use floating home button to jump to Today</li>
+              <li>• Mark days consistently to build long streaks</li>
+              <li>• Export PDF to share your progress with friends or coach</li>
+            </ul>
+          </div>
+
+          <!-- Coming Soon Teaser -->
+          <div class="bg-violet-50 border border-violet-200 rounded-3xl p-6 text-center">
+            <h3 class="font-semibold text-violet-700 mb-2">Coming Soon</h3>
+            <p class="text-violet-600 text-sm">Dark mode • Notifications • Cloud backup • Weekly reports</p>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
+          Thank you for using <span class="accent-color font-medium">Daily Flow</span> ✨<br>
+          One day at a time.
         </div>
       </div>
-
-      <!-- Pro Tips -->
-      <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
-        <h3 class="font-semibold text-amber-700 mb-4 flex items-center gap-2">
-          <i class="fas fa-lightbulb"></i> Pro Tips
-        </h3>
-        <ul class="text-sm text-amber-700 space-y-2.5">
-          <li>• Tap task text to edit instantly</li>
-          <li>• Drag &amp; drop to reorder tasks</li>
-          <li>• Tap time below task to set reminder</li>
-          <li>• Use floating home button to jump to Today</li>
-          <li>• Mark days consistently to build long streaks</li>
-          <li>• Export PDF to share your progress with friends or coach</li>
-        </ul>
-      </div>
-
-      <!-- Coming Soon Teaser -->
-      <div class="bg-violet-50 border border-violet-200 rounded-3xl p-6 text-center">
-        <h3 class="font-semibold text-violet-700 mb-2">Coming Soon</h3>
-        <p class="text-violet-600 text-sm">Dark mode • Notifications • Cloud backup • Weekly reports</p>
-      </div>
-
     </div>
 
-    <!-- Footer -->
-    <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
-      Thank you for using <span class="accent-color font-medium">Daily Flow</span> ✨<br>
-      One day at a time.
-    </div>
-  </div>
-</div>
+    <!-- Export PDF Modal -->
+    <div id="export-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
 
-<!-- Export PDF Modal -->
-<div id="export-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
-  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
-    
-    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-      <h2 class="text-xl font-semibold accent-color flex items-center gap-2">
-        <i class="fas fa-file-export"></i> Export to PDF
-      </h2>
-      <button onclick="hideExportModal()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
-    </div>
-
-    <div class="p-6 space-y-6">
-      <div>
-        <label class="block text-sm font-medium text-slate-600 mb-2">Start Date</label>
-        <input type="date" id="export-start-date" 
-               class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-600 mb-2">End Date</label>
-        <input type="date" id="export-end-date" 
-               class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
-      </div>
-
-      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
-        <i class="fas fa-info-circle"></i> 
-        The PDF will include habits, tasks, and daily progress between selected dates.
-      </div>
-
-      <button onclick="exportToPDF()" 
-              class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg active:scale-95 transition flex items-center justify-center gap-2">
-        <i class="fas fa-download"></i>
-        Generate & Download PDF
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Storage Modal -->
-<div id="storage-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
-  <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-    
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center text-white">
-          <i class="fas fa-database"></i>
+        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-xl font-semibold accent-color flex items-center gap-2">
+            <i class="fas fa-file-export"></i> Export to PDF
+          </h2>
+          <button onclick="hideExportModal()" class="text-3xl text-slate-400 hover:text-slate-600">×</button>
         </div>
-        <h2 class="text-xl font-semibold text-slate-700">Storage &amp; Data</h2>
-      </div>
-      <button onclick="hideStorageModal()" 
-              class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
-        ×
-      </button>
-    </div>
 
-    <!-- Modal Content -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-8">
+        <div class="p-6 space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">Start Date</label>
+            <input type="date" id="export-start-date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
+          </div>
 
-     <div class="bg-white rounded-3xl border border-slate-100 p-6">
-  <div class="flex justify-between items-center mb-4">
-    <span class="text-sm font-medium text-slate-600">Used Storage</span>
-    <span id="modal-storage-used" class="font-semibold text-slate-700">0 KB</span>
-  </div>
-  <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
-    <div id="modal-storage-bar" class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
-  </div>
-  <p id="modal-storage-detail" class="text-xs text-slate-500 mt-4 text-center">
-    Local storage used by your tasks and habits
-  </p>
-</div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-2">End Date</label>
+            <input type="date" id="export-end-date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 outline-none">
+          </div>
 
-      <!-- Clean Old Data -->
-      <div>
-        <h4 class="font-semibold text-slate-700 mb-3">Clean Old Data</h4>
-        <p class="text-xs text-slate-500 mb-5">Keep recent data and permanently delete everything older</p>
-        
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="cleanOldData(30);hideStorageModal()" 
-                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
-            Keep Last 1 Month
-          </button>
-          <button onclick="cleanOldData(90);hideStorageModal()" 
-                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
-            Keep Last 3 Months
-          </button>
-          <button onclick="cleanOldData(180);hideStorageModal()" 
-                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
-            Keep Last 6 Months
-          </button>
-          <button onclick="cleanOldData(365);hideStorageModal()" 
-                  class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
-            Keep Last 1 Year
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
+            <i class="fas fa-info-circle"></i>
+            The PDF will include habits, tasks, and daily progress between selected dates.
+          </div>
+
+          <button onclick="exportToPDF()"
+            class="w-full accent-bg text-white py-5 rounded-3xl font-semibold text-lg active:scale-95 transition flex items-center justify-center gap-2">
+            <i class="fas fa-download"></i>
+            Generate & Download PDF
           </button>
         </div>
       </div>
-
-      <!-- Danger Zone -->
-      <div class="pt-4 border-t border-slate-200">
-        <button onclick="if(confirm('⚠️ This will delete ALL your data permanently.\n\nAre you absolutely sure?')) { resetAllData(); hideStorageModal(); }" 
-                class="w-full py-5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-3xl transition flex items-center justify-center gap-3">
-          <i class="fas fa-trash"></i>
-          Clear ALL Data &amp; Reset App
-        </button>
-      </div>
-
     </div>
-  </div>
-</div>
+
+    <!-- Storage Modal -->
+    <div id="storage-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center text-white">
+              <i class="fas fa-database"></i>
+            </div>
+            <h2 class="text-xl font-semibold text-slate-700">Storage &amp; Data</h2>
+          </div>
+          <button onclick="hideStorageModal()"
+            class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
+            ×
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-8">
+
+          <div class="bg-white rounded-3xl border border-slate-100 p-6">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-sm font-medium text-slate-600">Used Storage</span>
+              <span id="modal-storage-used" class="font-semibold text-slate-700">0 KB</span>
+            </div>
+            <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div id="modal-storage-bar"
+                class="h-full bg-gradient-to-r from-orange-500 to-violet-500 w-0 transition-all duration-700"></div>
+            </div>
+            <p id="modal-storage-detail" class="text-xs text-slate-500 mt-4 text-center">
+              Local storage used by your tasks and habits
+            </p>
+          </div>
+
+          <!-- Clean Old Data -->
+          <div>
+            <h4 class="font-semibold text-slate-700 mb-3">Clean Old Data</h4>
+            <p class="text-xs text-slate-500 mb-5">Keep recent data and permanently delete everything older</p>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="cleanOldData(30);hideStorageModal()"
+                class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+                Keep Last 1 Month
+              </button>
+              <button onclick="cleanOldData(90);hideStorageModal()"
+                class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+                Keep Last 3 Months
+              </button>
+              <button onclick="cleanOldData(180);hideStorageModal()"
+                class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+                Keep Last 6 Months
+              </button>
+              <button onclick="cleanOldData(365);hideStorageModal()"
+                class="py-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium transition">
+                Keep Last 1 Year
+              </button>
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="pt-4 border-t border-slate-200">
+            <button
+              onclick="if(confirm('⚠️ This will delete ALL your data permanently.\n\nAre you absolutely sure?')) { resetAllData(); hideStorageModal(); }"
+              class="w-full py-5 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-3xl transition flex items-center justify-center gap-3">
+              <i class="fas fa-trash"></i>
+              Clear ALL Data &amp; Reset App
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
 
     <script>
@@ -992,17 +919,17 @@
         );
       }
 
-     function changeTheme(theme) {
-  currentTheme = theme;
-  applyTheme();
-  saveData();
-  renderAll();
+      function changeTheme(theme) {
+        currentTheme = theme;
+        applyTheme();
+        saveData();
+        renderAll();
 
-  // Refresh the default themes to show correct active border
-  if (!document.getElementById("view-settings").classList.contains("hidden")) {
-    renderDefaultThemes();
-  }
-}
+        // Refresh the default themes to show correct active border
+        if (!document.getElementById("view-settings").classList.contains("hidden")) {
+          renderDefaultThemes();
+        }
+      }
 
       function saveData() {
         localStorage.setItem("recurringTasks", JSON.stringify(recurringTasks));
@@ -1033,47 +960,47 @@
         };
       }
 
-    function applyTheme() {
-  document.body.classList.remove("theme-orange", "theme-green", "theme-violet", "theme-custom");
-  
-  if (currentTheme === "custom") {
-    document.body.classList.add("theme-custom");
-    document.documentElement.style.setProperty('--accent', customAccentColor);
-    document.documentElement.style.setProperty('--accent-start', customAccentColor);
-    // Generate nice mid and end colors automatically
-    document.documentElement.style.setProperty('--accent-mid', adjustColor(customAccentColor, -20));
-    document.documentElement.style.setProperty('--accent-end', adjustColor(customAccentColor, -40));
-  } else {
-    document.body.classList.add(`theme-${currentTheme}`);
-  }
-}
+      function applyTheme() {
+        document.body.classList.remove("theme-orange", "theme-green", "theme-violet", "theme-custom");
 
-function adjustColor(hex, percent) {
-  let r = parseInt(hex.slice(1,3),16);
-  let g = parseInt(hex.slice(3,5),16);
-  let b = parseInt(hex.slice(5,7),16);
-  
-  r = Math.min(255, Math.max(0, Math.round(r * (1 + percent/100))));
-  g = Math.min(255, Math.max(0, Math.round(g * (1 + percent/100))));
-  b = Math.min(255, Math.max(0, Math.round(b * (1 + percent/100))));
-  
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-}
+        if (currentTheme === "custom") {
+          document.body.classList.add("theme-custom");
+          document.documentElement.style.setProperty('--accent', customAccentColor);
+          document.documentElement.style.setProperty('--accent-start', customAccentColor);
+          // Generate nice mid and end colors automatically
+          document.documentElement.style.setProperty('--accent-mid', adjustColor(customAccentColor, -20));
+          document.documentElement.style.setProperty('--accent-end', adjustColor(customAccentColor, -40));
+        } else {
+          document.body.classList.add(`theme-${currentTheme}`);
+        }
+      }
 
-// Apply custom color
-function applyCustomColor() {
-  const picker = document.getElementById("custom-color-picker");
-  customAccentColor = picker.value;
-  currentTheme = "custom";
-  applyTheme();
-  saveData();
-  renderAll();
-}
+      function adjustColor(hex, percent) {
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
 
-// Render default theme cards (better than static)
-function renderDefaultThemes() {
-  const container = document.getElementById("default-themes");
-  container.innerHTML = `
+        r = Math.min(255, Math.max(0, Math.round(r * (1 + percent / 100))));
+        g = Math.min(255, Math.max(0, Math.round(g * (1 + percent / 100))));
+        b = Math.min(255, Math.max(0, Math.round(b * (1 + percent / 100))));
+
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+      }
+
+      // Apply custom color
+      function applyCustomColor() {
+        const picker = document.getElementById("custom-color-picker");
+        customAccentColor = picker.value;
+        currentTheme = "custom";
+        applyTheme();
+        saveData();
+        renderAll();
+      }
+
+      // Render default theme cards (better than static)
+      function renderDefaultThemes() {
+        const container = document.getElementById("default-themes");
+        container.innerHTML = `
     <div onclick="setDefaultTheme('orange')" class="theme-option cursor-pointer rounded-3xl overflow-hidden border-2 transition-all ${currentTheme === 'orange' ? 'border-orange-500 scale-105' : 'border-transparent hover:border-orange-300'}">
       <div class="h-16 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
         <span class="text-white text-xl font-bold tracking-tighter">DF</span>
@@ -1095,63 +1022,63 @@ function renderDefaultThemes() {
       <div class="p-3 text-center font-medium text-sm">Violet</div>
     </div>
   `;
-}
-function setDefaultTheme(theme) {
-  currentTheme = theme;
-  applyTheme();
-  saveData();
-  renderAll();
-  renderDefaultThemes();   // Important: Refresh active state
-}
+      }
+      function setDefaultTheme(theme) {
+        currentTheme = theme;
+        applyTheme();
+        saveData();
+        renderAll();
+        renderDefaultThemes();   // Important: Refresh active state
+      }
 
-// Popular preset colors (beautiful & modern)
-const popularColors = [
-   "#1f2937",
-  "#0ea5e9", // sky blue
-  "#22c55e", // green
-  "#f59e0b", // amber
-  "#ec4899", // pink
-  "#fbbf24"
-];
+      // Popular preset colors (beautiful & modern)
+      const popularColors = [
+        "#1f2937",
+        "#0ea5e9", // sky blue
+        "#22c55e", // green
+        "#f59e0b", // amber
+        "#ec4899", // pink
+        "#fbbf24"
+      ];
 
-function renderColorPalette() {
-  const container = document.getElementById("color-palette");
-  container.innerHTML = "";
+      function renderColorPalette() {
+        const container = document.getElementById("color-palette");
+        container.innerHTML = "";
 
-  popularColors.forEach(color => {
-    const isActive = currentTheme === "custom" && customAccentColor.toLowerCase() === color.toLowerCase();
+        popularColors.forEach(color => {
+          const isActive = currentTheme === "custom" && customAccentColor.toLowerCase() === color.toLowerCase();
 
-    const div = document.createElement("div");
-    div.className = `w-11 h-11 rounded-2xl cursor-pointer ring-2 transition-all shadow-sm ${isActive ? 'ring-offset-2 ring-blue-500 scale-110' : 'hover:scale-110'}`;
-    div.style.backgroundColor = color;
-    div.onclick = () => {
-      customAccentColor = color;
-      currentTheme = "custom";
-      applyTheme();
-      saveData();
-      renderAll();
-      renderDefaultThemes();
-      renderColorPalette();   // Refresh active ring
-    };
-    container.appendChild(div);
-  });
-}
+          const div = document.createElement("div");
+          div.className = `w-11 h-11 rounded-2xl cursor-pointer ring-2 transition-all shadow-sm ${isActive ? 'ring-offset-2 ring-blue-500 scale-110' : 'hover:scale-110'}`;
+          div.style.backgroundColor = color;
+          div.onclick = () => {
+            customAccentColor = color;
+            currentTheme = "custom";
+            applyTheme();
+            saveData();
+            renderAll();
+            renderDefaultThemes();
+            renderColorPalette();   // Refresh active ring
+          };
+          container.appendChild(div);
+        });
+      }
 
-// Update your existing toggleTheme() 
-function toggleTheme() {
-  const themes = ["orange", "green", "violet", "custom"];
-  let index = themes.indexOf(currentTheme);
-  currentTheme = themes[(index + 1) % themes.length];
-  
-  applyTheme();
-  saveData();
-  renderAll();
+      // Update your existing toggleTheme() 
+      function toggleTheme() {
+        const themes = ["orange", "green", "violet", "custom"];
+        let index = themes.indexOf(currentTheme);
+        currentTheme = themes[(index + 1) % themes.length];
 
-  // Refresh settings if open
-  if (!document.getElementById("view-settings").classList.contains("hidden")) {
-    renderDefaultThemes();
-  }
-}
+        applyTheme();
+        saveData();
+        renderAll();
+
+        // Refresh settings if open
+        if (!document.getElementById("view-settings").classList.contains("hidden")) {
+          renderDefaultThemes();
+        }
+      }
 
       function getTodayKey() {
         return new Date().toISOString().split("T")[0];
@@ -1174,6 +1101,19 @@ function toggleTheme() {
         return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")} ${period}`;
       }
 
+      function formatTimeRange(start, end) {
+        if (!start && !end) return "";
+
+        const startStr = start ? formatTime(start) : "";
+        const endStr = end ? formatTime(end) : "";
+
+        if (start && end) return `${startStr} – ${endStr}`;
+        if (start) return startStr;
+        if (end) return `by ${endStr}`;
+
+        return "";
+      }
+
       // Helper to sort tasks by time
       function timeToMinutes(time) {
         if (!time) return 9999; // Tasks with no time go to the bottom
@@ -1190,11 +1130,10 @@ function toggleTheme() {
 
         days.forEach((day, index) => {
           const btn = document.createElement("button");
-          btn.className = `h-11 text-xs font-medium rounded-2xl border transition-all ${
-            currentRepeatDays.includes(index)
-              ? "accent-bg text-white border-transparent"
-              : "border-slate-200 hover:border-slate-300"
-          }`;
+          btn.className = `h-11 text-xs font-medium rounded-2xl border transition-all ${currentRepeatDays.includes(index)
+            ? "accent-bg text-white border-transparent"
+            : "border-slate-200 hover:border-slate-300"
+            }`;
           btn.textContent = day;
           btn.onclick = () => toggleRepeatDay(index);
           container.appendChild(btn);
@@ -1202,124 +1141,124 @@ function toggleTheme() {
       }
 
       // Show Storage Modal
-function showStorageModal() {
-  const modal = document.getElementById("storage-modal");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-  
-  // Update storage info inside modal
-  updateStorageInfo();
-}
+      function showStorageModal() {
+        const modal = document.getElementById("storage-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
 
-// Hide Storage Modal
-function hideStorageModal() {
-  const modal = document.getElementById("storage-modal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
-}
+        // Update storage info inside modal
+        updateStorageInfo();
+      }
+
+      // Hide Storage Modal
+      function hideStorageModal() {
+        const modal = document.getElementById("storage-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
 
       // Show/Hide Export Modal
-function showExportModal() {
-  const modal = document.getElementById("export-modal");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
+      function showExportModal() {
+        const modal = document.getElementById("export-modal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
 
-  // Set default dates: last 30 days
-  const end = new Date();
-  const start = new Date();
-  start.setDate(start.getDate() - 30);
+        // Set default dates: last 30 days
+        const end = new Date();
+        const start = new Date();
+        start.setDate(start.getDate() - 30);
 
-  document.getElementById("export-start-date").value = start.toISOString().split("T")[0];
-  document.getElementById("export-end-date").value = end.toISOString().split("T")[0];
-}
+        document.getElementById("export-start-date").value = start.toISOString().split("T")[0];
+        document.getElementById("export-end-date").value = end.toISOString().split("T")[0];
+      }
 
-function hideExportModal() {
-  const modal = document.getElementById("export-modal");
-  modal.classList.add("hidden");
-  modal.classList.remove("flex");
-}
+      function hideExportModal() {
+        const modal = document.getElementById("export-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
 
-// Main Export Function
-async function exportToPDF() {
-  const startDate = document.getElementById("export-start-date").value;
-  const endDate = document.getElementById("export-end-date").value;
+      // Main Export Function
+      async function exportToPDF() {
+        const startDate = document.getElementById("export-start-date").value;
+        const endDate = document.getElementById("export-end-date").value;
 
-  if (!startDate || !endDate) {
-    alert("Please select both start and end dates");
-    return;
-  }
+        if (!startDate || !endDate) {
+          alert("Please select both start and end dates");
+          return;
+        }
 
-  if (startDate > endDate) {
-    alert("Start date cannot be after end date");
-    return;
-  }
+        if (startDate > endDate) {
+          alert("Start date cannot be after end date");
+          return;
+        }
 
-  hideExportModal();
+        hideExportModal();
 
-  // Show loading
-  const loadingAlert = alert("Generating PDF... This may take a few seconds.");
+        // Show loading
+        const loadingAlert = alert("Generating PDF... This may take a few seconds.");
 
-  try {
-    // We'll use jsPDF + html2canvas (need to include libraries)
-    await generatePDF(startDate, endDate);
-  } catch (e) {
-    console.error(e);
-    alert("Failed to generate PDF. Please try again.");
-  }
-}
+        try {
+          // We'll use jsPDF + html2canvas (need to include libraries)
+          await generatePDF(startDate, endDate);
+        } catch (e) {
+          console.error(e);
+          alert("Failed to generate PDF. Please try again.");
+        }
+      }
 
       // Reset all app data
-function resetAllData() {
-  if (confirm("⚠️ This will delete ALL your tasks, habits, and progress.\n\nAre you sure?")) {
-    localStorage.clear();
-    location.reload();
-  }
-}
+      function resetAllData() {
+        if (confirm("⚠️ This will delete ALL your tasks, habits, and progress.\n\nAre you sure?")) {
+          localStorage.clear();
+          location.reload();
+        }
+      }
 
-// Clean old data - keep only recent N days
-function cleanOldData(keepDays) {
-  if (!confirm(`This will delete ALL data older than ${keepDays} days.\n\nRecent ${keepDays} days of tasks and history will be kept.\n\nAre you sure?`)) {
-    return;
-  }
+      // Clean old data - keep only recent N days
+      function cleanOldData(keepDays) {
+        if (!confirm(`This will delete ALL data older than ${keepDays} days.\n\nRecent ${keepDays} days of tasks and history will be kept.\n\nAre you sure?`)) {
+          return;
+        }
 
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - keepDays);
-  const cutoffKey = cutoffDate.toISOString().split('T')[0];
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - keepDays);
+        const cutoffKey = cutoffDate.toISOString().split('T')[0];
 
-  let deletedCount = 0;
+        let deletedCount = 0;
 
-  // 1. Delete old one-time tasks
-  for (let dateKey in oneTimeTasks) {
-    if (dateKey < cutoffKey) {
-      delete oneTimeTasks[dateKey];
-      deletedCount++;
-    }
-  }
+        // 1. Delete old one-time tasks
+        for (let dateKey in oneTimeTasks) {
+          if (dateKey < cutoffKey) {
+            delete oneTimeTasks[dateKey];
+            deletedCount++;
+          }
+        }
 
-  // 2. Delete old recurring completions
-  for (let dateKey in recurringCompletions) {
-    if (dateKey < cutoffKey) {
-      delete recurringCompletions[dateKey];
-    }
-  }
+        // 2. Delete old recurring completions
+        for (let dateKey in recurringCompletions) {
+          if (dateKey < cutoffKey) {
+            delete recurringCompletions[dateKey];
+          }
+        }
 
-  // 3. Delete old calendar marks
-  for (let dateKey in calendarMarks) {
-    if (dateKey < cutoffKey) {
-      delete calendarMarks[dateKey];
-    }
-  }
+        // 3. Delete old calendar marks
+        for (let dateKey in calendarMarks) {
+          if (dateKey < cutoffKey) {
+            delete calendarMarks[dateKey];
+          }
+        }
 
-  saveData();
-  updateStorageInfo();
+        saveData();
+        updateStorageInfo();
 
-  alert(`Cleanup completed!\nDeleted data older than ${keepDays} days.\n\nYou now only have the past ${keepDays} days of history.`);
+        alert(`Cleanup completed!\nDeleted data older than ${keepDays} days.\n\nYou now only have the past ${keepDays} days of history.`);
 
-  // Refresh if user is on Today or Calendar
-  if (!document.getElementById("view-settings").classList.contains("hidden")) {
-    renderAll();
-  }
-}
+        // Refresh if user is on Today or Calendar
+        if (!document.getElementById("view-settings").classList.contains("hidden")) {
+          renderAll();
+        }
+      }
 
       function toggleRepeatDay(index) {
         if (currentRepeatDays.includes(index)) {
@@ -1353,31 +1292,31 @@ function cleanOldData(keepDays) {
         return taskColors[Math.abs(hash) % taskColors.length];
       }
 
-     function calculateProgress(dateKey) {
-  const date = new Date(dateKey);
-  const dayOfWeek = date.getDay();
+      function calculateProgress(dateKey) {
+        const date = new Date(dateKey);
+        const dayOfWeek = date.getDay();
 
-  const visibleRecurring = recurringTasks.filter(task => {
-    const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
-    const createdMatch = !task.createdDate || task.createdDate <= dateKey;
-    return weekdayMatch && createdMatch;
-  });
+        const visibleRecurring = recurringTasks.filter(task => {
+          const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
+          const createdMatch = !task.createdDate || task.createdDate <= dateKey;
+          return weekdayMatch && createdMatch;
+        });
 
-  const recurringCount = visibleRecurring.length;
+        const recurringCount = visibleRecurring.length;
 
-  const recurringCompleted = recurringCompletions[dateKey]
-    ? Object.values(recurringCompletions[dateKey]).filter(Boolean).length
-    : 0;
+        const recurringCompleted = recurringCompletions[dateKey]
+          ? Object.values(recurringCompletions[dateKey]).filter(Boolean).length
+          : 0;
 
-  const oneTimeList = oneTimeTasks[dateKey] || [];
-  const oneTimeCompleted = oneTimeList.filter((t) => t.completed).length;
+        const oneTimeList = oneTimeTasks[dateKey] || [];
+        const oneTimeCompleted = oneTimeList.filter((t) => t.completed).length;
 
-  const total = recurringCount + oneTimeList.length;
-  const completed = recurringCompleted + oneTimeCompleted;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+        const total = recurringCount + oneTimeList.length;
+        const completed = recurringCompleted + oneTimeCompleted;
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-  return { total, completed, percentage };
-}
+        return { total, completed, percentage };
+      }
 
       function updateProgress() {
         const { completed, total, percentage } =
@@ -1393,25 +1332,26 @@ function cleanOldData(keepDays) {
         const today = new Date(selectedDateKey);
         const dayOfWeek = today.getDay();
 
-       const visibleTasks = recurringTasks.filter((task) => {
-  // First, check weekday match
-  const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
+        const visibleTasks = recurringTasks.filter((task) => {
+          // First, check weekday match
+          const weekdayMatch = !task.repeatDays || task.repeatDays.includes(dayOfWeek);
 
-  // Second, check if the habit was created on or before this date
-  const createdMatch = !task.createdDate || task.createdDate <= selectedDateKey;
+          // Second, check if the habit was created on or before this date
+          const createdMatch = !task.createdDate || task.createdDate <= selectedDateKey;
 
-  return weekdayMatch && createdMatch;
-});
+          return weekdayMatch && createdMatch;
+        });
 
         visibleTasks.forEach((task) => {
           const completed =
             recurringCompletions[selectedDateKey]?.[task.id] || false;
           const bgColor = getTaskColor(task.id);
 
-          const timeHTML = task.time
-            ? `<div onclick="editTaskTime('${task.id}', true)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
+          // Replace the old timeHTML line with this:
+          const timeRange = formatTimeRange(task.startTime, task.endTime);
+          const timeHTML = timeRange
+            ? `<div onclick="editTaskTime('${task.id}', true)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${timeRange}</div>`
             : `<div onclick="editTaskTime('${task.id}', true)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
-
           let repeatIndicator = "";
           if (task.repeatDays && task.repeatDays.length > 0) {
             const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -1486,10 +1426,11 @@ function cleanOldData(keepDays) {
 
         tasks.forEach((task) => {
           const bgColor = getTaskColor(task.id);
-          const timeHTML = task.time
-            ? `<div onclick="editTaskTime('${task.id}', false)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
+          // Replace the old timeHTML line with this:
+          const timeRange = formatTimeRange(task.startTime, task.endTime);
+          const timeHTML = timeRange
+            ? `<div onclick="editTaskTime('${task.id}', false)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${timeRange}</div>`
             : `<div onclick="editTaskTime('${task.id}', false)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
-
           const li = document.createElement("li");
           li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${task.completed ? "completed" : ""}`;
           li.draggable = true;
@@ -1534,38 +1475,38 @@ function cleanOldData(keepDays) {
         enableDragAndDrop("onetime-list", false);
       }
 
-function updateStorageInfo() {
-  try {
-    let totalBytes = 0;
-    
-    // Calculate actual localStorage usage
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        totalBytes += localStorage[key].length * 2; // UTF-16 uses 2 bytes per char
+      function updateStorageInfo() {
+        try {
+          let totalBytes = 0;
+
+          // Calculate actual localStorage usage
+          for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+              totalBytes += localStorage[key].length * 2; // UTF-16 uses 2 bytes per char
+            }
+          }
+
+          const kbUsed = Math.round(totalBytes / 1024);
+          const maxKB = 5120; // ~5MB typical localStorage limit
+          const percent = Math.min(Math.round((kbUsed / maxKB) * 100), 100);
+
+          // Update modal elements
+          const usedEl = document.getElementById("modal-storage-used");
+          const barEl = document.getElementById("modal-storage-bar");
+          const detailEl = document.getElementById("modal-storage-detail");
+
+          if (usedEl) usedEl.textContent = `${kbUsed} KB`;
+          if (barEl) barEl.style.width = `${percent}%`;
+          if (detailEl) {
+            detailEl.textContent = `Local storage used by your tasks, habits & progress (${percent}% of ~5MB limit)`;
+          }
+
+        } catch (e) {
+          console.error("Storage calculation error:", e);
+          const usedEl = document.getElementById("modal-storage-used");
+          if (usedEl) usedEl.textContent = "— KB";
+        }
       }
-    }
-
-    const kbUsed = Math.round(totalBytes / 1024);
-    const maxKB = 5120; // ~5MB typical localStorage limit
-    const percent = Math.min(Math.round((kbUsed / maxKB) * 100), 100);
-
-    // Update modal elements
-    const usedEl = document.getElementById("modal-storage-used");
-    const barEl = document.getElementById("modal-storage-bar");
-    const detailEl = document.getElementById("modal-storage-detail");
-
-    if (usedEl) usedEl.textContent = `${kbUsed} KB`;
-    if (barEl) barEl.style.width = `${percent}%`;
-    if (detailEl) {
-      detailEl.textContent = `Local storage used by your tasks, habits & progress (${percent}% of ~5MB limit)`;
-    }
-
-  } catch (e) {
-    console.error("Storage calculation error:", e);
-    const usedEl = document.getElementById("modal-storage-used");
-    if (usedEl) usedEl.textContent = "— KB";
-  }
-}
 
       // Show one-time tasks when a date is selected in Calendar
       function renderSelectedDayTasks() {
@@ -1655,217 +1596,217 @@ function updateStorageInfo() {
       }
 
       async function generatePDF(startDate, endDate) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const days = [];
-  let current = new Date(start);
-  while (current <= end) {
-    days.push(current.toISOString().split("T")[0]);
-    current.setDate(current.getDate() + 1);
-  }
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const days = [];
+        let current = new Date(start);
+        while (current <= end) {
+          days.push(current.toISOString().split("T")[0]);
+          current.setDate(current.getDate() + 1);
+        }
 
-  let y = 18;
-  let pageNum = 1;
+        let y = 18;
+        let pageNum = 1;
 
-  // COLORS
-  const primary = [249, 115, 22]; // orange
-  const dark = [30, 30, 30];
-  const gray = [120, 120, 120];
+        // COLORS
+        const primary = [249, 115, 22]; // orange
+        const dark = [30, 30, 30];
+        const gray = [120, 120, 120];
 
-  // ================= HEADER =================
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(30);
-  doc.setTextColor(...primary);
-  doc.text("Daily Flow", 20, y);
-  doc.setFontSize(11);
-  doc.setTextColor(...gray);
-  doc.text(`Period: ${startDate} — ${endDate}`, 20, y + 8);
+        // ================= HEADER =================
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(30);
+        doc.setTextColor(...primary);
+        doc.text("Daily Flow", 20, y);
+        doc.setFontSize(11);
+        doc.setTextColor(...gray);
+        doc.text(`Period: ${startDate} — ${endDate}`, 20, y + 8);
 
-  // top divider
-  doc.setDrawColor(...primary);
-  doc.setLineWidth(1.2);
-  doc.line(20, y + 12, 190, y + 12);
-  y += 22;
+        // top divider
+        doc.setDrawColor(...primary);
+        doc.setLineWidth(1.2);
+        doc.line(20, y + 12, 190, y + 12);
+        y += 22;
 
-  // ================= SUMMARY CARD =================
-  let totalTasks = 0, completedTasks = 0, greenDays = 0, perfectDays = 0;
-  days.forEach(dateKey => {
-    const prog = calculateProgress(dateKey);
-    totalTasks += prog.total;
-    completedTasks += prog.completed;
-    if (calendarMarks[dateKey] === "green") greenDays++;
-    if (prog.total > 0 && prog.percentage === 100) perfectDays++;
-  });
+        // ================= SUMMARY CARD =================
+        let totalTasks = 0, completedTasks = 0, greenDays = 0, perfectDays = 0;
+        days.forEach(dateKey => {
+          const prog = calculateProgress(dateKey);
+          totalTasks += prog.total;
+          completedTasks += prog.completed;
+          if (calendarMarks[dateKey] === "green") greenDays++;
+          if (prog.total > 0 && prog.percentage === 100) perfectDays++;
+        });
 
-  const overallRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 100;
+        const overallRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 100;
 
-  // Card background
-  doc.setFillColor(255, 248, 243);
-  doc.roundedRect(18, y - 6, 174, 42, 4, 4, "F");
+        // Card background
+        doc.setFillColor(255, 248, 243);
+        doc.roundedRect(18, y - 6, 174, 42, 4, 4, "F");
 
-  doc.setFont("times", "bold");
-  doc.setFontSize(15);
-  doc.setTextColor(...dark);
-  doc.text("Summary", 22, y);
+        doc.setFont("times", "bold");
+        doc.setFontSize(15);
+        doc.setTextColor(...dark);
+        doc.text("Summary", 22, y);
 
-  doc.setFont("times", "normal");
-  doc.setFontSize(11);
-  y += 9;
-  doc.text(`Total Days          : ${days.length}`, 25, y);     y += 6;
-  doc.text(`Green Days          : ${greenDays}`, 25, y);       y += 6;
-  doc.text(`Perfect Days        : ${perfectDays}`, 25, y);     y += 6;
-  doc.text(`Overall Completion  : ${overallRate}%`, 25, y);
-  y += 20;
+        doc.setFont("times", "normal");
+        doc.setFontSize(11);
+        y += 9;
+        doc.text(`Total Days          : ${days.length}`, 25, y); y += 6;
+        doc.text(`Green Days          : ${greenDays}`, 25, y); y += 6;
+        doc.text(`Perfect Days        : ${perfectDays}`, 25, y); y += 6;
+        doc.text(`Overall Completion  : ${overallRate}%`, 25, y);
+        y += 20;
 
-  // ================= HIGHLIGHTS =================
-  doc.setFillColor(245, 245, 245);
-  doc.roundedRect(18, y - 6, 174, 32, 4, 4, "F");
+        // ================= HIGHLIGHTS =================
+        doc.setFillColor(245, 245, 245);
+        doc.roundedRect(18, y - 6, 174, 32, 4, 4, "F");
 
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...dark);
-  doc.text("Highlights", 22, y);
+        doc.setFont("times", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(...dark);
+        doc.text("Highlights", 22, y);
 
-  doc.setFont("times", "normal");
-  doc.setFontSize(10.5);
-  y += 9;
-  doc.text(`• Average completion : ${overallRate}%`, 25, y); y += 6;
-  doc.text(`• Most consistent    : ${recurringTasks.length > 0 ? recurringTasks[0].text : "None"}`, 25, y); y += 6;
-  doc.text(`• Tasks completed    : ${completedTasks}/${totalTasks}`, 25, y);
-  y += 18;
+        doc.setFont("times", "normal");
+        doc.setFontSize(10.5);
+        y += 9;
+        doc.text(`• Average completion : ${overallRate}%`, 25, y); y += 6;
+        doc.text(`• Most consistent    : ${recurringTasks.length > 0 ? recurringTasks[0].text : "None"}`, 25, y); y += 6;
+        doc.text(`• Tasks completed    : ${completedTasks}/${totalTasks}`, 25, y);
+        y += 18;
 
-  // ================= HABITS =================
-  if (recurringTasks.length > 0) {
-    doc.setFont("times", "bold");
-    doc.setFontSize(15);
-    doc.setTextColor(...dark);
-    doc.text("Your Habits", 20, y);
-    y += 9;
+        // ================= HABITS =================
+        if (recurringTasks.length > 0) {
+          doc.setFont("times", "bold");
+          doc.setFontSize(15);
+          doc.setTextColor(...dark);
+          doc.text("Your Habits", 20, y);
+          y += 9;
 
-    doc.setFont("times", "normal");
-    doc.setFontSize(10.8);
-    recurringTasks.forEach(task => {
-      if (y > 272) { doc.addPage(); y = 20; pageNum++; }
-      doc.setFillColor(250, 250, 250);
-      doc.roundedRect(22, y - 4, 165, 9, 2, 2, "F");
-      doc.text(`• ${task.text}`, 27, y);
-      y += 8;
-    });
-    y += 12;
-  }
+          doc.setFont("times", "normal");
+          doc.setFontSize(10.8);
+          recurringTasks.forEach(task => {
+            if (y > 272) { doc.addPage(); y = 20; pageNum++; }
+            doc.setFillColor(250, 250, 250);
+            doc.roundedRect(22, y - 4, 165, 9, 2, 2, "F");
+            doc.text(`• ${task.text}`, 27, y);
+            y += 8;
+          });
+          y += 12;
+        }
 
-  // ================= DAILY PROGRESS TABLE =================
-  doc.setFont("times", "bold");
-  doc.setFontSize(15);
-  doc.setTextColor(...dark);
-  doc.text("Daily Progress", 20, y);
-  y += 11;
+        // ================= DAILY PROGRESS TABLE =================
+        doc.setFont("times", "bold");
+        doc.setFontSize(15);
+        doc.setTextColor(...dark);
+        doc.text("Daily Progress", 20, y);
+        y += 11;
 
-  const colDate = 25;
-  const colStatus = 85;
-  const colCompleted = 130;
-  const colPercent = 172;
+        const colDate = 25;
+        const colStatus = 85;
+        const colCompleted = 130;
+        const colPercent = 172;
 
-  // Table Header
-  doc.setFillColor(...primary);
-  doc.roundedRect(20, y - 6, 170, 11, 2, 2, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(10.5);
-  doc.text("Date", colDate, y);
-  doc.text("Status", colStatus, y);
-  doc.text("Done", colCompleted, y);
-  doc.text("%", colPercent, y);
-  y += 9;
+        // Table Header
+        doc.setFillColor(...primary);
+        doc.roundedRect(20, y - 6, 170, 11, 2, 2, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10.5);
+        doc.text("Date", colDate, y);
+        doc.text("Status", colStatus, y);
+        doc.text("Done", colCompleted, y);
+        doc.text("%", colPercent, y);
+        y += 9;
 
-  const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  days.forEach(dateKey => {
-    if (y > 275) {
-      doc.addPage();
-      y = 22;
-      pageNum++;
-    }
+        days.forEach(dateKey => {
+          if (y > 275) {
+            doc.addPage();
+            y = 22;
+            pageNum++;
+          }
 
-    const prog = calculateProgress(dateKey);
-    const mark = calendarMarks[dateKey];
-    let statusText = "NONE";
-    let statusColor = gray;
+          const prog = calculateProgress(dateKey);
+          const mark = calendarMarks[dateKey];
+          let statusText = "NONE";
+          let statusColor = gray;
 
-    if (mark === "green") { statusText = "GREEN"; statusColor = [16,185,129]; }
-    else if (mark === "red") { statusText = "RED"; statusColor = [239,68,68]; }
+          if (mark === "green") { statusText = "GREEN"; statusColor = [16, 185, 129]; }
+          else if (mark === "red") { statusText = "RED"; statusColor = [239, 68, 68]; }
 
-    const displayPercent = prog.total > 0 ? prog.percentage : 100;
-    const d = new Date(dateKey);
-    const cleanDate = `${weekdays[d.getDay()]}, ${dateKey.slice(8,10)} ${months[d.getMonth()]}`;
+          const displayPercent = prog.total > 0 ? prog.percentage : 100;
+          const d = new Date(dateKey);
+          const cleanDate = `${weekdays[d.getDay()]}, ${dateKey.slice(8, 10)} ${months[d.getMonth()]}`;
 
-    // Row background
-    doc.setFillColor(250, 250, 250);
-    doc.roundedRect(20, y - 5, 170, 9, 2, 2, "F");
+          // Row background
+          doc.setFillColor(250, 250, 250);
+          doc.roundedRect(20, y - 5, 170, 9, 2, 2, "F");
 
-    doc.setFont("times", "normal");
-    doc.setFontSize(10.2);
-    doc.setTextColor(...dark);
-    doc.text(cleanDate, colDate, y);
+          doc.setFont("times", "normal");
+          doc.setFontSize(10.2);
+          doc.setTextColor(...dark);
+          doc.text(cleanDate, colDate, y);
 
-    doc.setTextColor(...statusColor);
-    doc.text(statusText, colStatus, y);
+          doc.setTextColor(...statusColor);
+          doc.text(statusText, colStatus, y);
 
-    doc.setTextColor(...dark);
-    doc.text(`${prog.completed}/${prog.total}`, colCompleted, y);
-    doc.text(`${displayPercent}%`, colPercent, y);
+          doc.setTextColor(...dark);
+          doc.text(`${prog.completed}/${prog.total}`, colCompleted, y);
+          doc.text(`${displayPercent}%`, colPercent, y);
 
-    y += 8;
+          y += 8;
 
-    // ================= TASKS (NOW PERFECTLY CLEAR) =================
-    const dayOfWeek = d.getDay();
-    const visibleRecurring = recurringTasks.filter(t =>
-      (!t.repeatDays || t.repeatDays.includes(dayOfWeek)) &&
-      (!t.createdDate || t.createdDate <= dateKey)
-    );
+          // ================= TASKS (NOW PERFECTLY CLEAR) =================
+          const dayOfWeek = d.getDay();
+          const visibleRecurring = recurringTasks.filter(t =>
+            (!t.repeatDays || t.repeatDays.includes(dayOfWeek)) &&
+            (!t.createdDate || t.createdDate <= dateKey)
+          );
 
-    const oneTimeForDay = oneTimeTasks[dateKey] || [];
-    const allTasksForDay = [];
+          const oneTimeForDay = oneTimeTasks[dateKey] || [];
+          const allTasksForDay = [];
 
-    visibleRecurring.forEach(t => 
-      allTasksForDay.push({ text: t.text, done: recurringCompletions[dateKey]?.[t.id] || false })
-    );
-    oneTimeForDay.forEach(t => 
-      allTasksForDay.push({ text: t.text, done: t.completed })
-    );
+          visibleRecurring.forEach(t =>
+            allTasksForDay.push({ text: t.text, done: recurringCompletions[dateKey]?.[t.id] || false })
+          );
+          oneTimeForDay.forEach(t =>
+            allTasksForDay.push({ text: t.text, done: t.completed })
+          );
 
-    doc.setFont("times", "normal");
-    doc.setFontSize(9.5);
+          doc.setFont("times", "normal");
+          doc.setFontSize(9.5);
 
-    allTasksForDay.forEach(task => {
-      if (y > 275) { doc.addPage(); y = 22; pageNum++; }
-      const mark = task.done ? "[v]" : "[x]";
-      const color = task.done ? [16,185,129] : [100,100,100];
-      doc.setTextColor(...color);
-      doc.text(`   ${mark} ${task.text}`, 28, y);
-      y += 5.8;
-    });
+          allTasksForDay.forEach(task => {
+            if (y > 275) { doc.addPage(); y = 22; pageNum++; }
+            const mark = task.done ? "[v]" : "[x]";
+            const color = task.done ? [16, 185, 129] : [100, 100, 100];
+            doc.setTextColor(...color);
+            doc.text(`   ${mark} ${task.text}`, 28, y);
+            y += 5.8;
+          });
 
-    y += 6;
-  });
+          y += 6;
+        });
 
-  // ================= FOOTER =================
-  doc.setFont("times", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(150,150,150);
-  doc.line(20, 285, 190, 285);
-  doc.text(
-    `Generated on ${new Date().toLocaleDateString("en-IN")}   •   Page ${pageNum}`,
-    20,
-    290
-  );
+        // ================= FOOTER =================
+        doc.setFont("times", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(150, 150, 150);
+        doc.line(20, 285, 190, 285);
+        doc.text(
+          `Generated on ${new Date().toLocaleDateString("en-IN")}   •   Page ${pageNum}`,
+          20,
+          290
+        );
 
-  doc.save(`DailyFlow_${startDate}_to_${endDate}.pdf`);
-  alert("✨ Premium & Clean PDF Generated Successfully!");
-}
+        doc.save(`DailyFlow_${startDate}_to_${endDate}.pdf`);
+        alert("✨ Premium & Clean PDF Generated Successfully!");
+      }
 
       function renderAll() {
         renderRecurringTasks();
@@ -1878,48 +1819,49 @@ function updateStorageInfo() {
       }
 
       function addTask() {
-  const text = document.getElementById("task-input").value.trim();
-  if (!text) return;
+        const text = document.getElementById("task-input").value.trim();
+        if (!text) return;
 
-  const time = document.getElementById("task-time").value || null;
+        const startTime = document.getElementById("task-start-time").value || null;
+        const endTime = document.getElementById("task-end-time").value || null;
 
-  const isRecurring = currentRepeatDays.length > 0;
+        const isRecurring = currentRepeatDays.length > 0;
 
-  if (isRecurring) {
-    // Check for duplicate
-    if (recurringTasks.some(t => t.text.toLowerCase() === text.toLowerCase())) {
-      alert("This habit already exists!");
-      return;
-    }
+        if (isRecurring) {
+          if (recurringTasks.some(t => t.text.toLowerCase() === text.toLowerCase())) {
+            alert("This habit already exists!");
+            return;
+          }
 
-    recurringTasks.push({
-      id: generateId(),
-      text: text,
-      time: time,
-      repeatDays: [...currentRepeatDays],
-      createdDate: selectedDateKey   // ← Important: Record when it was created
-    });
-  } else {
-    // One-time task
-    if (!oneTimeTasks[selectedDateKey]) oneTimeTasks[selectedDateKey] = [];
-    oneTimeTasks[selectedDateKey].push({
-      id: generateId(),
-      text: text,
-      completed: false,
-      time: time
-    });
-  }
+          recurringTasks.push({
+            id: generateId(),
+            text: text,
+            startTime: startTime,
+            endTime: endTime,
+            repeatDays: [...currentRepeatDays],
+            createdDate: selectedDateKey
+          });
+        } else {
+          if (!oneTimeTasks[selectedDateKey]) oneTimeTasks[selectedDateKey] = [];
+          oneTimeTasks[selectedDateKey].push({
+            id: generateId(),
+            text: text,
+            completed: false,
+            startTime: startTime,
+            endTime: endTime
+          });
+        }
 
-  saveData();
+        saveData();
 
-  // Reset form
-  document.getElementById("task-input").value = "";
-  document.getElementById("task-time").value = "";
-  currentRepeatDays = [];
-  renderWeekdaySelector();
+        // Reset form completely
+        document.getElementById("task-input").value = "";
+        resetTimeSection();           // ← Important: collapses and clears time
+        currentRepeatDays = [];
+        renderWeekdaySelector();
 
-  renderAll();
-}
+        renderAll();
+      }
 
       window.addTaskFromCalendar = function () {
         const input = document.getElementById("calendar-task-input");
@@ -2192,8 +2134,8 @@ function updateStorageInfo() {
           isRecurring
             ? recurringTasks.find((t) => t.id === taskId).text
             : oneTimeTasks[selectedDateKey || selectedCalendarDayKey].find(
-                (t) => t.id === taskId,
-              ).text,
+              (t) => t.id === taskId,
+            ).text,
         );
 
         if (newText === null || newText.trim() === "") return; // Cancelled or empty
@@ -2280,43 +2222,43 @@ function updateStorageInfo() {
         }
       }
 
-            function switchTab(tab) {
-  // Toggle view visibility
-  document.getElementById("view-today").classList.toggle("hidden", tab !== 0);
-  document.getElementById("view-calendar").classList.toggle("hidden", tab !== 1);
-  document.getElementById("view-stats").classList.toggle("hidden", tab !== 2);
-  document.getElementById("view-bmi").classList.toggle("hidden", tab !== 3);
-  document.getElementById("view-settings").classList.toggle("hidden", tab !== 4);   // New Settings view
+      function switchTab(tab) {
+        // Toggle view visibility
+        document.getElementById("view-today").classList.toggle("hidden", tab !== 0);
+        document.getElementById("view-calendar").classList.toggle("hidden", tab !== 1);
+        document.getElementById("view-stats").classList.toggle("hidden", tab !== 2);
+        document.getElementById("view-bmi").classList.toggle("hidden", tab !== 3);
+        document.getElementById("view-settings").classList.toggle("hidden", tab !== 4);   // New Settings view
 
-  // Render specific views when opened
-  if (tab === 1) renderCalendar();
-  if (tab === 2) renderStats();
-  if (tab === 4) {
-  renderDefaultThemes();
-  renderColorPalette();
-  updateStorageInfo();
-}
+        // Render specific views when opened
+        if (tab === 1) renderCalendar();
+        if (tab === 2) renderStats();
+        if (tab === 4) {
+          renderDefaultThemes();
+          renderColorPalette();
+          updateStorageInfo();
+        }
 
-  // Bottom nav active states
-  document.getElementById("nav-today").classList.toggle("accent-color", tab === 0);
-  document.getElementById("nav-today").classList.toggle("text-slate-400", tab !== 0);
+        // Bottom nav active states
+        document.getElementById("nav-today").classList.toggle("accent-color", tab === 0);
+        document.getElementById("nav-today").classList.toggle("text-slate-400", tab !== 0);
 
-  document.getElementById("nav-calendar").classList.toggle("accent-color", tab === 1);
-  document.getElementById("nav-calendar").classList.toggle("text-slate-400", tab !== 1);
+        document.getElementById("nav-calendar").classList.toggle("accent-color", tab === 1);
+        document.getElementById("nav-calendar").classList.toggle("text-slate-400", tab !== 1);
 
-  document.getElementById("nav-stats").classList.toggle("accent-color", tab === 2);
-  document.getElementById("nav-stats").classList.toggle("text-slate-400", tab !== 2);
+        document.getElementById("nav-stats").classList.toggle("accent-color", tab === 2);
+        document.getElementById("nav-stats").classList.toggle("text-slate-400", tab !== 2);
 
-  document.getElementById("nav-bmi").classList.toggle("accent-color", tab === 3);
-  document.getElementById("nav-bmi").classList.toggle("text-slate-400", tab !== 3);
+        document.getElementById("nav-bmi").classList.toggle("accent-color", tab === 3);
+        document.getElementById("nav-bmi").classList.toggle("text-slate-400", tab !== 3);
 
-  // Updated: Now using nav-settings instead of nav-about
-  document.getElementById("nav-settings").classList.toggle("accent-color", tab === 4);
-  document.getElementById("nav-settings").classList.toggle("text-slate-400", tab !== 4);
+        // Updated: Now using nav-settings instead of nav-about
+        document.getElementById("nav-settings").classList.toggle("accent-color", tab === 4);
+        document.getElementById("nav-settings").classList.toggle("text-slate-400", tab !== 4);
 
-  // Show floating "Go to Today" button only in Today tab
-  document.getElementById("float-btn").classList.toggle("hidden", tab !== 0);
-}
+        // Show floating "Go to Today" button only in Today tab
+        document.getElementById("float-btn").classList.toggle("hidden", tab !== 0);
+      }
 
       function goToToday() {
         selectedDateKey = getTodayKey(); // Go back to actual today
@@ -2370,27 +2312,24 @@ function updateStorageInfo() {
       // Edit Time Function
       function editTaskTime(taskId, isRecurring) {
         const dateKey = selectedDateKey || selectedCalendarDayKey;
-        let task;
-
-        if (isRecurring) {
-          task = recurringTasks.find((t) => t.id === taskId);
-        } else {
-          task = oneTimeTasks[dateKey].find((t) => t.id === taskId);
-        }
+        let task = isRecurring
+          ? recurringTasks.find(t => t.id === taskId)
+          : oneTimeTasks[dateKey].find(t => t.id === taskId);
 
         if (!task) return;
 
-        const newTime = prompt(
-          "Enter new time (HH:MM 24-hour format)\nExample: 14:30\nLeave empty to remove time",
-          task.time || "",
-        );
+        const currentStart = task.startTime || "";
+        const currentEnd = task.endTime || "";
 
-        if (newTime !== null) {
-          task.time = newTime.trim() === "" ? null : newTime.trim();
-          saveData();
-          renderAll();
-          if (selectedCalendarDayKey) renderSelectedDayTasks();
-        }
+        const newStart = prompt("Start time (HH:MM) or leave empty", currentStart);
+        const newEnd = prompt("End time (HH:MM) or leave empty", currentEnd);
+
+        if (newStart !== null) task.startTime = newStart.trim() || null;
+        if (newEnd !== null) task.endTime = newEnd.trim() || null;
+
+        saveData();
+        renderAll();
+        if (selectedCalendarDayKey) renderSelectedDayTasks();
       }
 
       // ====================== DRAG & DROP FUNCTIONALITY ======================
@@ -2478,19 +2417,19 @@ function updateStorageInfo() {
 
 
       function showAboutModal() {
-  document.getElementById("about-modal").classList.remove("hidden");
-  document.getElementById("about-modal").classList.add("flex");
-}
+        document.getElementById("about-modal").classList.remove("hidden");
+        document.getElementById("about-modal").classList.add("flex");
+      }
 
-function hideAboutModal() {
-  document.getElementById("about-modal").classList.add("hidden");
-  document.getElementById("about-modal").classList.remove("flex");
-}
+      function hideAboutModal() {
+        document.getElementById("about-modal").classList.add("hidden");
+        document.getElementById("about-modal").classList.remove("flex");
+      }
 
-// Optional: Close modal when clicking outside the content
-document.getElementById("about-modal").addEventListener("click", function(e) {
-  if (e.target === this) hideAboutModal();
-});
+      // Optional: Close modal when clicking outside the content
+      document.getElementById("about-modal").addEventListener("click", function (e) {
+        if (e.target === this) hideAboutModal();
+      });
 
       // ====================== DRAGGABLE FLOATING BUTTON ======================
       let isDragging = false;
@@ -2546,11 +2485,111 @@ document.getElementById("about-modal").addEventListener("click", function(e) {
         }
       }
 
+      // ==================== IMPROVED SWIPE GESTURE FOR TODAY TAB ====================
+      function enableSwipeGestures() {
+        const todayView = document.getElementById("view-today");
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 70;   // pixels
+
+        function handleSwipe() {
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) < swipeThreshold) return;
+
+          const todayView = document.getElementById("view-today");
+
+          todayView.style.transition = "transform 0.22s cubic-bezier(0.4, 0, 0.2, 1)";
+
+          if (diff > 0) {
+            // ← Swipe Left = Next Day
+            todayView.style.transform = "translateX(-45px)";
+            setTimeout(() => {
+              nextDay();
+              todayView.style.transition = "transform 0.35s ease-out";
+              todayView.style.transform = "translateX(0)";
+            }, 160);
+          } else {
+            // → Swipe Right = Previous Day
+            todayView.style.transform = "translateX(45px)";
+            setTimeout(() => {
+              prevDay();
+              todayView.style.transition = "transform 0.35s ease-out";
+              todayView.style.transform = "translateX(0)";
+            }, 160);
+          }
+        }
+
+        // Touch Events
+        todayView.addEventListener("touchstart", (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        todayView.addEventListener("touchend", (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          handleSwipe();
+        }, { passive: true });
+
+        // Optional Mouse Drag (for testing on desktop)
+        let isDragging = false;
+        let startX = 0;
+
+        todayView.addEventListener("mousedown", (e) => {
+          isDragging = true;
+          startX = e.screenX;
+        });
+
+        todayView.addEventListener("mouseup", (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          const endX = e.screenX;
+          const diff = startX - endX;
+
+          if (Math.abs(diff) >= swipeThreshold) {
+            if (diff > 0) nextDay();
+            else prevDay();
+          }
+        });
+      }
+
+      // ==================== TIME SECTION TOGGLE ====================
+      let timeSectionOpen = false;
+
+      function toggleTimeSection() {
+        const inputs = document.getElementById("time-inputs");
+        const chevron = document.getElementById("time-chevron");
+        const trigger = document.getElementById("time-section-trigger");
+
+        timeSectionOpen = !timeSectionOpen;
+
+        if (timeSectionOpen) {
+          inputs.classList.remove("hidden");
+          chevron.style.transform = "rotate(180deg)";
+          trigger.classList.add("border-orange-300", "bg-orange-50");
+        } else {
+          inputs.classList.add("hidden");
+          chevron.style.transform = "rotate(0deg)";
+          trigger.classList.remove("border-orange-300", "bg-orange-50");
+        }
+      }
+
+      function resetTimeSection() {
+        timeSectionOpen = false;
+        document.getElementById("time-inputs").classList.add("hidden");
+        document.getElementById("time-chevron").style.transform = "rotate(0deg)";
+        document.getElementById("time-section-trigger").classList.remove("border-orange-300", "bg-orange-50");
+
+        // Clear input values
+        document.getElementById("task-start-time").value = "";
+        document.getElementById("task-end-time").value = "";
+      }
+
       function init() {
         loadData();
         loadSavedBMI();
         // Add this at the very end of init()
         makeButtonDraggable();
+        enableSwipeGestures();
+        resetTimeSection();
         selectedDateKey = getTodayKey();
         applyTheme();
 
@@ -2584,5 +2623,6 @@ document.getElementById("about-modal").addEventListener("click", function(e) {
 
       document.addEventListener("DOMContentLoaded", init);
     </script>
-  </body>
+</body>
+
 </html>
