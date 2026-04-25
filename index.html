@@ -195,6 +195,15 @@
       margin-top: 20px;
     }
 
+    .future-blocked {
+  cursor: not-allowed !important;
+  opacity: 0.65;
+}
+
+.future-blocked * {
+  cursor: not-allowed !important;
+}
+
     /* Custom User Theme */
     .theme-custom .accent-color {
       color: var(--accent, #8b5cf6);
@@ -610,176 +619,260 @@
       </div>
     </div>
     <!-- About Modal (Scrollable Popup) - UPDATED & ENHANCED -->
-    <div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
-      <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+   <!-- About Modal (Scrollable Popup) - UPDATED v1.7 -->
+<div id="about-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
+  <div class="bg-white w-full max-w-md max-h-[85vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
 
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 accent-bg rounded-2xl flex items-center justify-center text-white">
-              <i class="fas fa-water"></i>
-            </div>
-            <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
-          </div>
-          <button onclick="hideAboutModal()"
-            class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
-            ×
-          </button>
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 accent-bg rounded-2xl flex items-center justify-center text-white">
+          <i class="fas fa-water"></i>
         </div>
+        <h2 class="text-xl font-semibold accent-color">About Daily Flow</h2>
+      </div>
+      <button onclick="hideAboutModal()"
+        class="w-9 h-9 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600 transition">
+        ×
+      </button>
+    </div>
 
-        <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
 
-          <!-- Hero -->
-          <div class="text-center">
-            <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
-            <p class="text-slate-500 mt-1">Version 1.5 • Built for better days</p>
+      <!-- Hero -->
+      <div class="text-center">
+        <h1 class="text-3xl font-bold tracking-tighter accent-color">Daily Flow</h1>
+        <p class="text-slate-500 mt-1">Version 1.7 • Smart task lifecycle system</p>
+      </div>
+
+      <div>
+        <p class="text-slate-600 leading-relaxed text-[15.5px]">
+          Daily Flow is a powerful and simple daily planner designed to help you stay consistent, 
+          manage tasks efficiently, and build meaningful habits. It intelligently handles tasks across days,
+          making productivity smoother and more realistic.
+        </p>
+      </div>
+
+      <!-- What's New -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-rocket"></i> What's New in 1.7
+        </h3>
+
+        <div class="space-y-4 bg-slate-50 rounded-3xl p-5">
+
+          <div class="flex gap-3">
+            <div class="text-2xl">🔄</div>
+            <div>
+              <h4 class="font-semibold">Smart Carry Forward</h4>
+              <p class="text-sm text-slate-600">
+                Incomplete tasks automatically move to next days until completed.
+              </p>
+            </div>
           </div>
 
+          <div class="flex gap-3">
+            <div class="text-2xl">📅</div>
+            <div>
+              <h4 class="font-semibold">Created Date Tracking</h4>
+              <p class="text-sm text-slate-600">
+                Tasks always show original created date even after forwarding.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="text-2xl">✅</div>
+            <div>
+              <h4 class="font-semibold">Completion-Based Tasks</h4>
+              <p class="text-sm text-slate-600">
+                Tasks now belong to the day they are completed.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="text-2xl">📝</div>
+            <div>
+              <h4 class="font-semibold">Task Notes</h4>
+              <p class="text-sm text-slate-600">
+                Add short notes (10 characters) when completing tasks or habits.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <div class="text-2xl">🚫</div>
+            <div>
+              <h4 class="font-semibold">Future Habit Protection</h4>
+              <p class="text-sm text-slate-600">
+                Prevents completing daily habits for future dates.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Key Features -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-star"></i> Key Features
+        </h3>
+
+        <div class="grid grid-cols-2 gap-4">
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">🔄</div>
+            <div>
+              <h4 class="font-semibold">Recurring Habits</h4>
+              <p class="text-sm text-slate-600">Daily or weekly repeats</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📅</div>
+            <div>
+              <h4 class="font-semibold">One-time Tasks</h4>
+              <p class="text-sm text-slate-600">With carry-forward system</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">⏰</div>
+            <div>
+              <h4 class="font-semibold">Time Scheduling</h4>
+              <p class="text-sm text-slate-600">Start & end time</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📝</div>
+            <div>
+              <h4 class="font-semibold">Task Notes</h4>
+              <p class="text-sm text-slate-600">Quick completion notes</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">🎨</div>
+            <div>
+              <h4 class="font-semibold">Themes</h4>
+              <p class="text-sm text-slate-600">Multiple color styles</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📊</div>
+            <div>
+              <h4 class="font-semibold">Progress Tracking</h4>
+              <p class="text-sm text-slate-600">Daily stats & progress</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📆</div>
+            <div>
+              <h4 class="font-semibold">Calendar View</h4>
+              <p class="text-sm text-slate-600">Track & manage days</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">📤</div>
+            <div>
+              <h4 class="font-semibold">PDF Export</h4>
+              <p class="text-sm text-slate-600">Export your data</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">💾</div>
+            <div>
+              <h4 class="font-semibold">Storage Tools</h4>
+              <p class="text-sm text-slate-600">Manage & clean data</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">⚖️</div>
+            <div>
+              <h4 class="font-semibold">BMI Calculator</h4>
+              <p class="text-sm text-slate-600">Health tracking</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">🔀</div>
+            <div>
+              <h4 class="font-semibold">Drag & Drop</h4>
+              <p class="text-sm text-slate-600">Reorder tasks</p>
+            </div>
+          </div>
+
+          <div class="feature-item flex gap-3 p-4 rounded-2xl">
+            <div class="text-3xl accent-color">✏️</div>
+            <div>
+              <h4 class="font-semibold">Inline Editing</h4>
+              <p class="text-sm text-slate-600">Edit instantly</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- How to Use -->
+      <div>
+        <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
+          <i class="fas fa-book"></i> How to Use
+        </h3>
+
+        <div class="space-y-6 text-[15px]">
           <div>
-            <p class="text-slate-600 leading-relaxed text-[15.5px]">
-              Daily Flow is a beautiful, simple, and powerful daily planner that helps you build lasting habits,
-              stay organized, and celebrate every productive day with joy and intention.
+            <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
+            <p class="text-slate-600 mt-1">
+              Type your task → tap + <br>
+              Select days = Habit <br>
+              No days = One-time task
             </p>
           </div>
 
-          <!-- What's New (New Section) -->
           <div>
-            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-              <i class="fas fa-rocket"></i> What's New in 1.6
-            </h3>
-            <div class="space-y-4 bg-slate-50 rounded-3xl p-5">
-              <div class="flex gap-3">
-                <div class="text-2xl">📄</div>
-                <div>
-                  <h4 class="font-semibold">Export to PDF</h4>
-                  <p class="text-sm text-slate-600">Export your full history with tasks, completion status, and calendar
-                    marks for any date range</p>
-                </div>
-              </div>
-              <div class="flex gap-3">
-                <div class="text-2xl">🎨</div>
-                <div>
-                  <h4 class="font-semibold">Custom Color Themes</h4>
-                  <p class="text-sm text-slate-600">Choose any color you love with automatic gradient support</p>
-                </div>
-              </div>
-              <div class="flex gap-3">
-                <div class="text-2xl">💾</div>
-                <div>
-                  <h4 class="font-semibold">Storage Management</h4>
-                  <p class="text-sm text-slate-600">Clean old data, reset app, and see storage usage</p>
-                </div>
-              </div>
-            </div>
+            <h4 class="font-semibold text-slate-700">Smart Flow</h4>
+            <p class="text-slate-600 mt-1">
+              Incomplete tasks move forward automatically.<br>
+              Completed tasks stay on that day.
+            </p>
           </div>
 
-          <!-- Key Features -->
           <div>
-            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-              <i class="fas fa-star"></i> Key Features
-            </h3>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">🔄</div>
-                <div>
-                  <h4 class="font-semibold">Recurring Habits</h4>
-                  <p class="text-sm text-slate-600">Daily or weekly repeats</p>
-                </div>
-              </div>
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">📅</div>
-                <div>
-                  <h4 class="font-semibold">One-time Tasks</h4>
-                  <p class="text-sm text-slate-600">With time &amp; reminders</p>
-                </div>
-              </div>
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">🎨</div>
-                <div>
-                  <h4 class="font-semibold">Beautiful Calendar</h4>
-                  <p class="text-sm text-slate-600">Mark days green/red</p>
-                </div>
-              </div>
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">📊</div>
-                <div>
-                  <h4 class="font-semibold">Progress Tracking</h4>
-                  <p class="text-sm text-slate-600">Live bar + monthly stats</p>
-                </div>
-              </div>
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">📤</div>
-                <div>
-                  <h4 class="font-semibold">PDF Export</h4>
-                  <p class="text-sm text-slate-600">Share your journey</p>
-                </div>
-              </div>
-              <div class="feature-item flex gap-3 p-4 rounded-2xl">
-                <div class="text-3xl accent-color">⚖️</div>
-                <div>
-                  <h4 class="font-semibold">BMI Calculator</h4>
-                  <p class="text-sm text-slate-600">Track your health</p>
-                </div>
-              </div>
-            </div>
+            <h4 class="font-semibold text-slate-700">Calendar</h4>
+            <p class="text-slate-600 mt-1">
+              Tap any day to manage tasks and track progress.
+            </p>
           </div>
-
-          <!-- How to Use -->
-          <div>
-            <h3 class="font-semibold text-lg accent-color mb-4 flex items-center gap-2">
-              <i class="fas fa-book"></i> How to Use
-            </h3>
-            <div class="space-y-6 text-[15px]">
-              <div>
-                <h4 class="font-semibold text-slate-700">Adding Tasks</h4>
-                <p class="text-slate-600 mt-1">Type your task → tap <strong>+</strong><br>
-                  Select weekdays = Recurring habit<br>
-                  No days selected = One-time task</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-slate-700">Calendar View</h4>
-                <p class="text-slate-600 mt-1">Tap any day to mark Green (success) or Red.<br>
-                  Add tasks directly from calendar.</p>
-              </div>
-              <div>
-                <h4 class="font-semibold text-slate-700">Export Your Progress</h4>
-                <p class="text-slate-600 mt-1">Go to Settings → Export to PDF and choose any date range.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pro Tips -->
-          <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6">
-            <h3 class="font-semibold text-amber-700 mb-4 flex items-center gap-2">
-              <i class="fas fa-lightbulb"></i> Pro Tips
-            </h3>
-            <ul class="text-sm text-amber-700 space-y-2.5">
-              <li>• Tap task text to edit instantly</li>
-              <li>• Drag &amp; drop to reorder tasks</li>
-              <li>• Tap time below task to set reminder</li>
-              <li>• Use floating home button to jump to Today</li>
-              <li>• Mark days consistently to build long streaks</li>
-              <li>• Export PDF to share your progress with friends or coach</li>
-            </ul>
-          </div>
-
-          <!-- Coming Soon Teaser -->
-          <div class="bg-violet-50 border border-violet-200 rounded-3xl p-6 text-center">
-            <h3 class="font-semibold text-violet-700 mb-2">Coming Soon</h3>
-            <p class="text-violet-600 text-sm">Dark mode • Notifications • Cloud backup • Weekly reports</p>
-          </div>
-
-        </div>
-
-        <!-- Footer -->
-        <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
-          Thank you for using <span class="accent-color font-medium">Daily Flow</span> ✨<br>
-          One day at a time.
         </div>
       </div>
+
+      <!-- Footer Note -->
+      <div class="bg-violet-50 border border-violet-200 rounded-3xl p-6 text-center">
+        <h3 class="font-semibold text-violet-700 mb-2">Coming Soon</h3>
+        <p class="text-violet-600 text-sm">
+          Notifications • Dark Mode • Cloud Backup • Weekly Reports
+        </p>
+      </div>
+
     </div>
 
+    <!-- Footer -->
+    <div class="p-6 text-center text-xs text-slate-400 border-t border-slate-100">
+      Thank you for using <span class="accent-color font-medium">Daily Flow</span> ✨<br>
+      One day at a time.
+    </div>
+
+  </div>
+</div>
     <!-- Export PDF Modal -->
     <div id="export-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[10000] p-4">
       <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
@@ -1343,8 +1436,9 @@
         });
 
         visibleTasks.forEach((task) => {
-          const completed =
-            recurringCompletions[selectedDateKey]?.[task.id] || false;
+          const completionData = recurringCompletions[selectedDateKey]?.[task.id];
+const completed = completionData?.done || false;
+const note = completionData?.note || "";
           const bgColor = getTaskColor(task.id);
 
           // Replace the old timeHTML line with this:
@@ -1365,33 +1459,79 @@
               : `<div class="text-[10px] font-semibold text-violet-600 mt-1">${selectedLetters}</div>`;
           }
 
+          const noteHTML = note
+  ? `<div class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 mt-1 ml-1">${note}</div>`
+  : "";
+
           const li = document.createElement("li");
           li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${completed ? "completed" : ""}`;
           li.draggable = true;
           li.dataset.id = task.id;
           li.dataset.type = "recurring";
           li.style.backgroundColor = completed ? "#f8fafc" : bgColor;
+          const todayKey = getTodayKey();
+          const isFuture = selectedDateKey > todayKey;
+          if (isFuture) {
+  li.style.cursor = "not-allowed";
+}
 
           li.innerHTML = `
-      <input type="checkbox" class="w-6 h-6 rounded-xl" ${completed ? "checked" : ""}>
+      <input type="checkbox" class="w-6 h-6 rounded-xl"
+  ${completed ? "checked" : ""}
+  ${isFuture ? "disabled" : ""}
+>
       <div class="flex-1 min-w-0">
         <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
         ${timeHTML}
         ${repeatIndicator}
+        ${noteHTML} 
       </div>
       <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
     `;
+    const checkbox = li.querySelector("input");
+
+if (isFuture) {
+  li.style.cursor = "not-allowed";
+  checkbox.style.cursor = "not-allowed";
+
+  // Optional UI polish
+  li.style.opacity = "0.65";
+}
 
           const textSpan = li.querySelector(".task-text");
           makeTextEditable(textSpan, task.id, true);
 
-          li.querySelector("input").addEventListener("change", (e) => {
-            if (!recurringCompletions[selectedDateKey])
-              recurringCompletions[selectedDateKey] = {};
-            recurringCompletions[selectedDateKey][task.id] = e.target.checked;
-            saveData();
-            renderAll();
-          });
+         li.querySelector("input").addEventListener("change", (e) => {
+  const todayKey = getTodayKey();
+
+  if (selectedDateKey > todayKey) {
+    alert("You can't complete future habits!");
+    e.target.checked = false;
+    return;
+  }
+
+  if (!recurringCompletions[selectedDateKey])
+    recurringCompletions[selectedDateKey] = {};
+
+ if (!recurringCompletions[selectedDateKey])
+  recurringCompletions[selectedDateKey] = {};
+
+if (e.target.checked) {
+  let note = prompt("Add a short note (max 10 chars):") || "";
+
+  note = note.substring(0, 10); // limit to 10 chars
+
+  recurringCompletions[selectedDateKey][task.id] = {
+    done: true,
+    note: note
+  };
+} else {
+  delete recurringCompletions[selectedDateKey][task.id];
+}
+
+  saveData();
+  renderAll();
+});
 
           li.querySelector("button").addEventListener("click", () => {
             if (confirm("Delete habit?")) {
@@ -1413,7 +1553,23 @@
         const clearBtn = document.getElementById("clear-completed-btn");
         list.innerHTML = "";
 
-        let tasks = oneTimeTasks[selectedDateKey] || [];
+        let tasks = [];
+
+// Loop through ALL past dates
+for (let dateKey in oneTimeTasks) {
+  if (dateKey > selectedDateKey) continue;
+
+  oneTimeTasks[dateKey].forEach(task => {
+    // Show task if:
+    // 1. It's created on or before selected date
+    // 2. It's NOT completed
+    // OR it's completed on this date (to show history)
+
+    if (!task.completed || dateKey === selectedDateKey) {
+      tasks.push(task);
+    }
+  });
+}
 
         if (tasks.length === 0) {
           noTasks.classList.remove("hidden");
@@ -1437,12 +1593,23 @@
           li.dataset.id = task.id;
           li.dataset.type = "onetime";
           li.style.backgroundColor = task.completed ? "#f8fafc" : bgColor;
+          const noteHTML = task.note
+  ? `<div class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 mt-1 ml-1">${task.note}</div>`
+  : "";
+
+  const createdDateHTML = task.createdDate
+  ? `<div class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 mt-1 ml-1">
+      Created: ${formatDateDisplay(task.createdDate)}
+     </div>`
+  : "";
 
           li.innerHTML = `
       <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
       <div class="flex-1 min-w-0">
         <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
         ${timeHTML}
+        ${createdDateHTML}
+         ${noteHTML} 
       </div>
       <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
     `;
@@ -1450,14 +1617,60 @@
           const textSpan = li.querySelector(".task-text");
           makeTextEditable(textSpan, task.id, false);
 
-          li.querySelector("input").addEventListener("change", (e) => {
-            const target = oneTimeTasks[selectedDateKey].find(
-              (t) => t.id === task.id,
-            );
-            if (target) target.completed = e.target.checked;
-            saveData();
-            renderAll();
-          });
+        li.querySelector("input").addEventListener("change", (e) => {
+  let originalDateKey = null;
+  let targetTask = null;
+
+  // 🔍 Find original task
+  for (let dateKey in oneTimeTasks) {
+    const found = oneTimeTasks[dateKey].find(t => t.id === task.id);
+    if (found) {
+      originalDateKey = dateKey;
+      targetTask = found;
+      break;
+    }
+  }
+
+  if (!targetTask) return;
+
+  if (e.target.checked) {
+    let note = prompt("Add a short note (max 10 chars):");
+
+    if (note === null) {
+      e.target.checked = false;
+      return;
+    }
+
+    targetTask.note = note.substring(0, 10);
+    targetTask.completed = true;
+
+    // 🔥 MOVE TASK TO CURRENT DAY
+    if (originalDateKey !== selectedDateKey) {
+
+      // Remove from old date
+      oneTimeTasks[originalDateKey] =
+        oneTimeTasks[originalDateKey].filter(t => t.id !== task.id);
+
+      if (oneTimeTasks[originalDateKey].length === 0) {
+        delete oneTimeTasks[originalDateKey];
+      }
+
+      // Add to current date
+      if (!oneTimeTasks[selectedDateKey]) {
+        oneTimeTasks[selectedDateKey] = [];
+      }
+
+      oneTimeTasks[selectedDateKey].push(targetTask);
+    }
+
+  } else {
+    targetTask.completed = false;
+    targetTask.note = "";
+  }
+
+  saveData();
+  renderAll();
+});
 
           li.querySelector("button").addEventListener("click", () => {
             oneTimeTasks[selectedDateKey] = oneTimeTasks[
@@ -1516,7 +1729,17 @@
         let taskList = document.getElementById("calendar-task-list");
         if (taskList) taskList.remove();
 
-        const tasks = oneTimeTasks[selectedCalendarDayKey] || [];
+        let tasks = [];
+
+for (let dateKey in oneTimeTasks) {
+  if (dateKey > selectedCalendarDayKey) continue;
+
+  oneTimeTasks[dateKey].forEach(task => {
+    if (!task.completed || dateKey === selectedCalendarDayKey) {
+      tasks.push(task);
+    }
+  });
+}
 
         if (tasks.length === 0) return;
 
@@ -1534,12 +1757,16 @@
         const ul = document.createElement("ul");
         ul.className = "space-y-3";
 
-        // Sort by time
         const sortedTasks = [...tasks].sort(
-          (a, b) => timeToMinutes(a.time) - timeToMinutes(b.time),
-        );
+  (a, b) => timeToMinutes(a.time) - timeToMinutes(b.time)
+);
 
-        tasks.forEach((task) => {
+sortedTasks.forEach((task) => {
+          const createdDateHTML = task.createdDate
+  ? `<div class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 mt-1 ml-1">
+       Created: ${formatDateDisplay(task.createdDate)}
+     </div>`
+  : "";
           const li = document.createElement("li");
           li.className = `task-item flex items-center gap-4 rounded-3xl px-5 py-5 border border-slate-100 ${task.completed ? "completed" : ""}`;
           li.draggable = true;
@@ -1552,11 +1779,17 @@
             ? `<div onclick="editTaskTime('${task.id}', false)" class="text-xs accent-color mt-1 cursor-pointer hover:underline">${formatTime(task.time)}</div>`
             : `<div onclick="editTaskTime('${task.id}', false)" class="text-xs text-slate-400 mt-1 cursor-pointer hover:underline">Add time</div>`;
 
+            const noteHTML = task.note
+  ? `<div class="inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 mt-1 ml-1">${task.note}</div>`
+  : "";
+
           li.innerHTML = `
       <input type="checkbox" class="w-6 h-6 rounded-xl" ${task.completed ? "checked" : ""}>
       <div class="flex-1 min-w-0">
         <span class="task-text text-[17px] font-medium break-words">${task.text}</span>
-        ${timeHTML}
+       ${timeHTML}
+${createdDateHTML}
+${noteHTML}
       </div>
       <button class="text-slate-400 hover:text-red-500 text-2xl">×</button>
     `;
@@ -1847,6 +2080,7 @@
             id: generateId(),
             text: text,
             completed: false,
+            createdDate: selectedDateKey,
             startTime: startTime,
             endTime: endTime
           });
@@ -1864,23 +2098,26 @@
       }
 
       window.addTaskFromCalendar = function () {
-        const input = document.getElementById("calendar-task-input");
-        const text = input.value.trim();
-        if (!text || !selectedCalendarDayKey) return;
+  const input = document.getElementById("calendar-task-input");
+  const text = input.value.trim();
+  if (!text || !selectedCalendarDayKey) return;
 
-        if (!oneTimeTasks[selectedCalendarDayKey])
-          oneTimeTasks[selectedCalendarDayKey] = [];
-        oneTimeTasks[selectedCalendarDayKey].push({
-          id: generateId(),
-          text,
-          completed: false,
-          time: null,
-        });
+  if (!oneTimeTasks[selectedCalendarDayKey])
+    oneTimeTasks[selectedCalendarDayKey] = [];
 
-        saveData();
-        input.value = "";
-        renderCalendar();
-      };
+  oneTimeTasks[selectedCalendarDayKey].push({
+    id: generateId(),
+    text,
+    completed: false,
+    time: null,
+    createdDate: selectedCalendarDayKey, // ✅ ADD THIS
+    note: ""
+  });
+
+  saveData();
+  input.value = "";
+  renderCalendar();
+};
 
       function resetRecurringCompletions() {
         if (confirm("Reset daily habits for this day?")) {
